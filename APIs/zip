@@ -1,0 +1,60 @@
+local function getName(path)
+	local newp = path
+	for i = 1, #path do
+		if string.sub(path, i, i) == "/" then
+			newp = string.sub(path, i+1)
+		end
+	end
+	return newp
+end
+
+zip = {}
+ 
+function zip.pack(file)
+	local czip = {}
+		local function getz(path, pon)
+		sleep(0)
+		-- path = shell.resolve(path)
+		if fs.isDir(path) then
+			pon[getName(path)] = {}
+			for i,v in pairs(fs.list(path)) do
+				getz(path.."/"..v, pon[getName(path)])
+			end
+		else
+			if shell.resolve(path) ~= "rom/programs/secret/alongtimeago" then
+				local fg = fs.open(path, "r")
+				pon[getName(path)] = fg.readAll()
+				fg.close()
+			end 
+		end
+	end
+	getz(file, czip)
+	return czip
+end
+
+function zip.unpack(tbl, place)
+	local nm
+	for i,v in pairs(tbl) do
+		nm = i
+		tbl = v
+	end
+	fs.makeDir(place.."/"..nm)
+	file = place .. "/" .. nm
+	local function undz(pon, tln, tl)
+		sleep(0)
+		if type(tl) == "table" then
+			fs.makeDir(pon.."/"..tln)
+			for i,v in pairs(tl) do
+				undz(pon.."/"..tln, i, v)
+			end
+		elseif type(tl) == "string" then
+			local tr = fs.open(pon.."/"..tln, "w")
+			tr.write(tl)
+			tr.close()
+		end
+	end
+	for i,v in pairs(tbl) do
+		undz(file, i, v)
+	end
+	return true
+end

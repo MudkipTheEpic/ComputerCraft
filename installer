@@ -1,10 +1,15 @@
 local git = "https://raw.github.com/MudkipTheEpic/ComputerCraft/master"
 
 local InstallFiles = {
-	{"osrunner", "osrunner"}
+	{"osrunner", "osrunner"};
+	{"APIs/zip", "APIs/zip"};
 }
 
-local Version = "1.0"
+local Directories = {
+	"APIs";
+}
+
+local Version = "1.1"
 
 if not http then
 	print("You must have http enabled to install OSRunner")
@@ -14,7 +19,7 @@ end
 local function Download(Link)
 	if not http then return false end
 	local Res = http.get(Link)
-	if not Res then return end 
+	if not Res then return false end 
 	local ToR = Res.readAll()
 	Res.close()
 	return ToR
@@ -30,11 +35,22 @@ if Vers ~= Version then
 	return 
 end 
 
+for i,v in pairs(Directories) do
+	if fs.exists(v) then
+		fs.delete(v)
+	end 
+	fs.makeDir(v)
+end 
+
 for i,v in pairs(InstallFiles) do
 	if fs.exists(v[2]) then
 		fs.delete(v[2])
 	end 
 	local Res = Download(git .. "/" .. v[1])
+	if Res == false then
+		print("Unable to download")
+		return
+	end 
 	local Fo = fs.open(v[2], "w")
 	Fo.write(Res)
 	Fo.close()
