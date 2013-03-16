@@ -1,0 +1,41 @@
+local git = "https://raw.github.com/MudkipTheEpic/ComputerCraft/master"
+
+local InstallFiles = {
+	{"osrunner", "osrunner"}
+}
+
+local Version = "1.0"
+
+if not http then
+	print("You must have http enabled to install OSRunner")
+	return
+end 
+
+local function Download(Link)
+	if not http then return false end
+	local Res = http.get(Link)
+	if not Res then return end 
+	local ToR = Res.readAll()
+	Res.close()
+	return ToR
+end 
+
+local Vers = Download(git .. "/Version/installer")
+if Vers ~= Version then
+	local Update = Download(git .. "/installer")
+	local Fo = fs.open(shell.getRunningProgram(), "w")
+	Fo.write(Update)
+	Fo.close()
+	shell.run(shell.getRunningProgram())
+	return 
+end 
+
+for i,v in pairs(InstallFiles) do
+	if fs.exists(v[2]) then
+		fs.delete(v[2])
+	end 
+	local Res = Download(git .. "/" .. v[1])
+	local Fo = fs.open(v[2], "w")
+	Fo.write(Res)
+	Fo.close()
+end 
