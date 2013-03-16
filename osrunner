@@ -1,0 +1,278 @@
+--[[
+OsRunner: by MudkipTheEpic
+Feel free to redistribute and modify this, but keep these lines in please.
+Thanks,
+  Mudkip
+]]--
+
+local function insertCustomRomFiles()
+--modify this how you want for your os/program.
+end
+
+printStuff=true --Change to see printed stuff or not.
+
+--Backup FS declaration...
+local oFs={}
+for k, v in pairs(fs) do
+	oFs[k]=v
+end
+
+--Backup others declaration...
+local oldDfile=dofile
+local oldLfile=loadfile
+local err = error
+local oldReboot=os.reboot
+local oldShutdown=os.shutdown
+
+
+
+local oldsenv=setfenv
+local oldmeta=setmetatable
+local orset=rawset
+local bPair=pairs
+
+local function centerPrint(text, ny)
+	if type(text) == "table" then for _, v in pairs(text) do centerPrint(v) end
+else
+	local x, y = term.getCursorPos()
+	local w, h = term.getSize()
+	term.setCursorPos(w/2 - text:len()/2, ny or y)
+	print(text)
+end
+end
+
+local function centerWrite(text, ny)
+	if type(text) == "table" then for _, v in pairs(text) do centerWrite(v) end
+else
+	local x, y = term.getCursorPos()
+	local w, h = term.getSize()
+	term.setCursorPos(w/2 - text:len()/2, ny or y)
+	write(text)
+end
+end
+
+local function md(d)
+	term.clearLine()
+	if printStuff then write("Making directory "..d.."...") end
+	sleep(0)
+	return fs.makeDir(dir.."/"..d)
+end
+
+local function cp(f)
+	if printStuff then write("Importing "..f.." to "..dir.."...") end
+	sleep(0)
+        local function scrapfunc() return fs.copy(f,dir.."/"..f) end
+        local ok=pcall(scrapfunc)
+	return ok
+end
+
+local function clear()
+	term.clear()
+	term.setCursorPos(1,1)
+end
+
+local function sandbox(directory)
+	local sandboxed = directory
+
+	local rT={[1] = sandboxed, [2] = sandboxed.."rom"}
+
+	local function check(filename)
+		if filename:sub(1,sandboxed:len()+4) == (sandboxed.."rom/" or sandboxed.."rom\\") then return true end
+		for k,v in bPair(rT) do
+			if v==filename then return true end
+		end
+		return false
+	end
+
+	local function isAllowed()
+		return false
+	end
+
+	local function errorout()
+		err("Access denied",3)
+	end
+
+
+	function fs.open(f,v)
+		f=sandboxed..f or sandboxed
+		if isAllowed() then return oFs.open(f,v) end
+		if v ~= ("r" or "rb" or nil) then
+			if check(f) then
+				errorout()
+			end
+		end
+		return oFs.open(f,v)
+	end
+
+	function fs.exists(f)
+		f=sandboxed..f or sandboxed
+		return oFs.exists(f)
+	end
+
+	function fs.isDir(f)
+		f=sandboxed..f or sandboxed
+		return oFs.isDir(f)
+	end
+
+	function fs.delete(f)
+		f=sandboxed..f or sandboxed
+		if isAllowed() then return oFs.delete(f) end
+		if check(f) then
+			errorout()
+		end
+		return oFs.delete(f)
+	end
+
+	function fs.copy(f,v)
+		f=sandboxed..f or sandboxed
+		v=sandboxed..v or sandboxed
+		if isAllowed() then return oFs.copy(f,v) end
+		if check(f) then
+			errorout()
+		end
+		return oFs.copy(f,v)
+	end
+
+	function fs.move(f,v)
+		f=sandboxed..f or sandboxed
+		v=sandboxed..v or sandboxed
+		if isAllowed() then return oFs.move(f,v) end
+		if check(f) then
+			errorout()
+		end
+		return oFs.move(f,v)
+	end
+
+	function fs.isReadOnly(f)
+		f=sandboxed..f or sandboxed
+		if check(f) then
+			return true
+		end
+		return oFs.isReadOnly(f)
+	end
+
+
+	function fs.list(dir)
+		dir=dir..sandboxed or sandboxed
+		return oFs.list(dir)
+	end
+
+	function fs.getName(file)
+		file=sandboxed..file or sandboxed
+		if file==sandboxed then return "/" end
+		return oFs.getName(file)
+	end
+
+	function fs.makeDir(dir)
+		dir=sandboxed..dir or sandboxed
+		return oFs.makeDir(dir)
+	end
+		
+
+
+
+	function setfenv(func,...)
+		for k,v in bPair(protectedFuncs) do
+			if v==func then errorout() end
+		end
+		return oldsenv(func,...)
+	end
+
+	function setmetatable(table,...)
+		if table==fs or table==_G then errorout() end
+		return oldmeta(table,...)
+	end
+
+	function rawset(table,...)
+		if table==fs then errorout() end
+		return orset(table,...)
+	end
+
+	local protectedFuncs={setfenv,setmetatable,rawset,bPair}
+	for k,v in bPair(fs) do
+		table.insert(protectedFuncs,v)
+	end
+		
+
+end
+
+local function restore()
+	_G.fs={}
+	for k,v in bPair(oFs) do
+		_G.fs[k]=v
+	end
+	_G.setfenv=oldsenv
+	_G.os.reboot=oldReboot
+	_G.os.shutdown=oldShutdown
+	_G.setmetatable=oldmeta
+	_G.rawset=orset
+end
+
+--Main program begins here...
+
+dir=...
+
+
+
+if not fs.isDir(dir) then
+fs.delete(dir) fs.makeDir(dir)
+
+clear()
+if printStuff then centerPrint("Creating OS Environment for directory "..dir..".") end
+
+md("rom")
+md("rom/programs")
+md("rom/programs/secret")
+md("rom/apis")
+md("rom/help")
+cp("rom/startup")
+for k,v in pairs(fs.list("rom/programs")) do
+	cp("rom/programs/"..v)
+end
+for k,v in pairs(fs.list("rom/apis")) do
+	cp("rom/apis/"..v)
+end
+for k,v in pairs(fs.list("rom/help")) do
+	cp("rom/help/"..v)
+end
+
+else
+	print("Loading OS Environment for directory "..dir..".")
+
+end
+
+term.clear()
+term.setCursorPos(1,1)
+
+--Insert option to select OS'es...
+
+
+if printStuff then write("Running the virtual box in 3")
+for i=1,2 do
+	sleep(.33)
+	write(".")
+end
+sleep(0.33)
+write("2")
+for i=1,2 do
+	sleep(.33)
+	write(".")
+end
+sleep(0.33)
+write("1")
+for i=1,2 do
+	sleep(.33)
+	write(".")
+end
+sleep(0.33)
+end
+
+sandbox(dir)
+
+os.shutdown=restore
+
+shell.exit()
+insertCustomRomFiles()
+term.clear()
+term.setCursorPos(1,1)
+os.run({},"rom/programs/shell")
