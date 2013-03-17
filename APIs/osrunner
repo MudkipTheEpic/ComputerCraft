@@ -1,3 +1,4 @@
+local function loadSandbox(...)
 --[[
 OsRunner: by MudkipTheEpic
 Feel free to redistribute and modify this, but keep these lines in please.
@@ -214,7 +215,9 @@ end
 
 --Main program begins here...
 
-dir=...
+local args={...}
+dir=args[1].."/"
+OS=args[2] or "CraftOS "..os.version()
 
 
 
@@ -239,7 +242,6 @@ end
 for k,v in pairs(fs.list("rom/help")) do
 	cp("rom/help/"..v)
 end
-local OS="CraftOS "..os.version()
 insertOSFiles(OS)
 
 
@@ -283,3 +285,4 @@ shell.exit()
 term.clear()
 term.setCursorPos(1,1)
 os.run({},"rom/programs/shell")
+end
