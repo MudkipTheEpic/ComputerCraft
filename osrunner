@@ -5,8 +5,8 @@ Thanks,
   Mudkip
 ]]--
 
-local function insertCustomRomFiles()
---modify this how you want for your os/program.
+local function insertOSFiles()
+--beta stub :P
 end
 
 printStuff=true --Change to see printed stuff or not.
@@ -53,13 +53,13 @@ end
 
 local function md(d)
 	term.clearLine()
-	if printStuff then write("Making directory "..d.."...") end
+	if printStuff then write("Making directory "..d.."...\n") end
 	sleep(0)
 	return fs.makeDir(dir.."/"..d)
 end
 
 local function cp(f)
-	if printStuff then write("Importing "..f.." to "..dir.."...") end
+	if printStuff then write("Importing "..f.." to "..dir.."...\n") end
 	sleep(0)
         local function scrapfunc() return fs.copy(f,dir.."/"..f) end
         local ok=pcall(scrapfunc)
@@ -188,6 +188,10 @@ local function sandbox(directory)
 		return orset(table,...)
 	end
 
+	function os.reboot()
+		os.run({},"rom/programs/shell")
+	end
+
 	local protectedFuncs={setfenv,setmetatable,rawset,bPair}
 	for k,v in bPair(fs) do
 		table.insert(protectedFuncs,v)
@@ -235,6 +239,10 @@ end
 for k,v in pairs(fs.list("rom/help")) do
 	cp("rom/help/"..v)
 end
+local OS="CraftOS "..os.version()
+insertOSFiles(OS)
+
+
 
 else
 	print("Loading OS Environment for directory "..dir..".")
@@ -247,7 +255,7 @@ term.setCursorPos(1,1)
 --Insert option to select OS'es...
 
 
-if printStuff then write("Running the virtual box in 3")
+if printStuff then write("Running environment for OS: \""..OS.."\" in 3")
 for i=1,2 do
 	sleep(.33)
 	write(".")
@@ -272,7 +280,6 @@ sandbox(dir)
 os.shutdown=restore
 
 shell.exit()
-insertCustomRomFiles()
 term.clear()
 term.setCursorPos(1,1)
 os.run({},"rom/programs/shell")
