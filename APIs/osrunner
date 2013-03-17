@@ -8,7 +8,9 @@ Thanks,
 ]]--
 
 local function activateInstaller(filepath)
+if filepath then
   shell.run(filepath)
+end
 end
 
 sandbox.load=nil

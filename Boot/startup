@@ -40,6 +40,7 @@ local function Setup()
 end 
 
 local function Sand(Dir)
+	os.run({},".OSRunner/APIs/osrunner")
 	sandbox.load(Dir .. "/home", "CraftOS 1.5")
 end 
 
