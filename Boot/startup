@@ -79,7 +79,7 @@ local function StartLoader()
 	term.setBackgroundColor(colors.white)
 	for i,v in pairs(nfs.list(".OSRunner/Kernels")) do
 		term.setBackgroundColor(colors.lightGray)
-		term.setCursorPos(2, i + 1)
+		term.setCursorPos(2, i + 2)
 		term.write(string.rep(" ", W - 2))
 		CenterPrint(v, i + 2)
 	end 
