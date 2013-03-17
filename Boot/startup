@@ -40,9 +40,6 @@ local function Setup()
 end 
 
 local function Sand(Dir)
-	if not nfs.exists(Dir .. "/home") then
-		nfs.makeDir(Dir .. "/home")
-	end 
 	sandbox.load(Dir .. "/home", "CraftOS 1.5")
 end 
 
