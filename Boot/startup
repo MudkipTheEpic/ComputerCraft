@@ -1,5 +1,17 @@
 local StartScreen = paintutils.loadImage("/Resources/logo")
 local W, H = term.getSize()
+local nfs = {}
+for i,v in pairs(fs) do
+	nfs[i] = v
+end 
+
+local ShouldExist = {
+	".OSRunner";
+	".OSRunner/Keep";
+	".OSRunner/Kernels";
+}
+
+shell.run(".OSRunner/APIs/osrunner")
 
 term.setBackgroundColor(colors.lime)
 term.clear()
@@ -13,6 +25,24 @@ term.write("Press F5 for OSRunner options")
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
 	print(Text)
+end 
+
+local function EraseData()
+	if nfs.exists(".OSRunner/Kernels") then
+		nfs.delete(".OSRunner/Kernels")
+	end 
+end 
+
+local function Setup()
+	EraseData()
+	nfs.makeDir("/.OSRunner/CraftOS")
+end 
+
+local function Sand(Dir)
+	if not nfs.exists(Dir .. "/home") then
+		nfs.makeDir(Dir .. "/home")
+	end 
+	sandbox.load(Dir .. "/home")
 end 
 
 local function StartLoader()
@@ -35,6 +65,10 @@ local function StartLoader()
 	write("System settings")
 	term.setCursorPos(22, 16)
 	write("Launch OS")
+	term.setBackgroundColor(colors.white)
+	for i,v in pairs(nfs.list(".OSRunner/Kernels")) do
+		CenterPrint(v, i + 2)
+	end 
 end 
 
 local function RunDef()

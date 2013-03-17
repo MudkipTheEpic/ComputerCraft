@@ -1,20 +1,21 @@
 local git = "https://raw.github.com/MudkipTheEpic/ComputerCraft/master"
 
 local InstallFiles = {
-	{"APIs/osrunner", "APIs/osrunner"};
-	{"APIs/zip", "APIs/zip"};
-	{"Resources/logo", "Resources/logo"};
-	{"Resources/main", "Resources/main"};
-	{"Boot/startup", "Boot/startup"};
+	{"APIs/osrunner", ".OSRunner/APIs/osrunner"};
+	{"APIs/zip", ".OSRunner/APIs/zip"};
+	{"Resources/logo", ".OSRunner/Resources/logo"};
+	{"Resources/main", ".OSRunner/Resources/main"};
+	{"Boot/startup", ".OSRunner/Boot/startup"};
 }
 
 local Directories = {
+	".OSRunner";
 	"APIs";
 	"Resources";
 	"Boot";
 }
 
-local Version = "1.1"
+local Version = "1.2"
 
 if not http then
 	print("You must have http enabled to install OSRunner")
