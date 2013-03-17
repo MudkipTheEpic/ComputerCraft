@@ -1,4 +1,4 @@
-local StartScreen = paintutils.loadImage("/Resources/logo")
+local StartScreen = paintutils.loadImage(".OSRunner/Resources/logo")
 local W, H = term.getSize()
 local nfs = {}
 for i,v in pairs(fs) do
@@ -54,7 +54,7 @@ local function StartLoader()
 	if ShouldSet == true then
 		Setup()
 	end 
-	local Main = paintutils.loadImage("/Resources/main")
+	local Main = paintutils.loadImage(".OSRunner/Resources/main")
 	term.setBackgroundColor(colors.white)
 	term.clear()
 	paintutils.drawImage(Main, 1, 1)
