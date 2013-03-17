@@ -21,7 +21,7 @@ end
 os.startTimer(3)
 while true do
 	local event, p1, p2 = os.pullEvent()
-	if event == "key" and p1 == "63" then
+	if event == "key" and p1 == 63 then
 		StartLoader()
 		break
 	elseif event == "timer" then
