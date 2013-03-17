@@ -6,7 +6,6 @@ for i,v in pairs(fs) do
 end 
 
 local ShouldExist = {
-	".OSRunner";
 	".OSRunner/Keep";
 	".OSRunner/Kernels";
 }
@@ -46,6 +45,15 @@ local function Sand(Dir)
 end 
 
 local function StartLoader()
+	local ShouldSet = false
+	for i,v in pairs(ShouldExist) do
+		if not nfs.exists(v) then
+			ShouldSet = true
+		end 
+	end 
+	if ShouldSet == true then
+		Setup()
+	end 
 	local Main = paintutils.loadImage("/Resources/main")
 	term.setBackgroundColor(colors.white)
 	term.clear()
