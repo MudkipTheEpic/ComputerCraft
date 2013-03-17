@@ -7,7 +7,7 @@ Thanks,
   Mudkip
 ]]--
 
-local function insertOSFiles(filepath)
+local function activateInstaller(filepath)
   shell.run(filepath)
 end
 
@@ -74,7 +74,7 @@ local function clear()
 end
 
 local function sandbox(directory)
-	local sandboxed = directory
+	local sandboxed = directory.."/"
 
 	local rT={[1] = sandboxed, [2] = sandboxed.."rom"}
 
@@ -220,6 +220,7 @@ local args={...}
 dir=args[1].."/"
 OS=args[2] or "CraftOS "..os.version()
 filepath=args[3]
+urlinstaller=args[4]
 
 
 
@@ -245,7 +246,12 @@ for k,v in pairs(fs.list("rom/help")) do
 	cp("rom/help/"..v)
 end
 
-
+local gI=http.get(urlinstaller)
+local text=gI.readAll()
+gI.close()
+local wI=fs.open(dir..filepath,"w")
+wi.write(text)
+wI.close()
 
 
 else
@@ -286,6 +292,6 @@ os.shutdown=restore
 shell.exit()
 term.clear()
 term.setCursorPos(1,1)
-if firstTime then insertOSFiles(filepath) end
+if firstTime then activateInstaller(filepath) end
 os.run({},"rom/programs/shell")
 end
