@@ -34,7 +34,9 @@ end
 
 local function Setup()
 	EraseData()
-	nfs.makeDir("/.OSRunner/CraftOS")
+	nfs.makeDir(".OSRunner/Kernels")
+	nfs.makeDir(".OSRunner/Keep")
+	nfs.makeDir(".OSRunner/Kernels/CraftOS")
 end 
 
 local function Sand(Dir)
@@ -80,7 +82,16 @@ local function StartLoader()
 end 
 
 local function RunDef()
-
+	local ShouldSet = false
+	for i,v in pairs(ShouldExist) do
+		if not nfs.exists(v) then
+			ShouldSet = true
+		end 
+	end 
+	if ShouldSet == true then
+		Setup()
+	end 
+	Sand(".OSRunner/Kernels/CraftOS")
 end 
 
 os.startTimer(3)
