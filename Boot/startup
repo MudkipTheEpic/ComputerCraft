@@ -43,6 +43,10 @@ local function Sand(Dir)
 	sandbox.load(Dir .. "/home", "CraftOS 1.5")
 end 
 
+local function CheckFiles()
+
+end 
+
 local function StartLoader()
 	local ShouldSet = false
 	for i,v in pairs(ShouldExist) do
@@ -74,6 +78,9 @@ local function StartLoader()
 	write("Launch OS")
 	term.setBackgroundColor(colors.white)
 	for i,v in pairs(nfs.list(".OSRunner/Kernels")) do
+		term.setBackgroundColor(colors.lightGray)
+		term.setCursorPos(2, i + 1)
+		term.write(string.rep(" ", W - 2))
 		CenterPrint(v, i + 2)
 	end 
 end 
@@ -88,6 +95,8 @@ local function RunDef()
 	if ShouldSet == true then
 		Setup()
 	end 
+	term.setBackgroundColor(colors.lime)
+	term.clear()
 	Sand(".OSRunner/Kernels/CraftOS")
 end 
 
