@@ -11,6 +11,7 @@ local function activateInstaller(filepath)
   shell.run(filepath)
 end
 
+sandbox.load=nil
 printStuff=true --Change to see printed stuff or not.
 
 --Backup FS declaration...
