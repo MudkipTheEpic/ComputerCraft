@@ -6,4 +6,6 @@ term.clear()
 paintutils.drawImage(StartScreen, 8, 1)
 
 term.setCursorPos(1, H)
+term.setBackgroundColor(colors.lime)
+term.setTextColor(colors.gray)
 term.write("Press F5 to open bootloader")
