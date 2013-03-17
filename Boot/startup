@@ -1,0 +1,9 @@
+local StartScreen = paintutils.loadImage("/Resources/logo")
+local W, H = term.getSize()
+
+term.setBackgroundColor(colors.lime)
+term.clear()
+paintutils.drawImage(StartScreen, 8, 1)
+
+term.setCursorPos(1, H)
+term.write("Press F5 to open bootloader")

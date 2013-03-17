@@ -1,14 +1,17 @@
 local git = "https://raw.github.com/MudkipTheEpic/ComputerCraft/master"
 
 local InstallFiles = {
-	{"osrunner", "osrunner"};
+	{"APIs/osrunner", "APIs/osrunner"};
 	{"APIs/zip", "APIs/zip"};
 	{"Resources/logo", "Resources/logo"};
+	{"Resources/main", "Resources/main"};
+	{"Boot/startup", "Boot/startup"};
 }
 
 local Directories = {
 	"APIs";
 	"Resources";
+	"Boot";
 }
 
 local Version = "1.1"
