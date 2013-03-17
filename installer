@@ -3,10 +3,12 @@ local git = "https://raw.github.com/MudkipTheEpic/ComputerCraft/master"
 local InstallFiles = {
 	{"osrunner", "osrunner"};
 	{"APIs/zip", "APIs/zip"};
+	{"Resources/logo", "Resources/logo"};
 }
 
 local Directories = {
 	"APIs";
+	"Resources";
 }
 
 local Version = "1.1"
@@ -25,7 +27,7 @@ local function Download(Link)
 	return ToR
 end 
 
-local Vers = Download(git .. "/Version/installer")
+local Vers = Download(git .. "/CurrentVersion/installer")
 if Vers ~= Version then
 	local Update = Download(git .. "/installer")
 	local Fo = fs.open(shell.getRunningProgram(), "w")
