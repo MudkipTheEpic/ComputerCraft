@@ -10,12 +10,12 @@ local InstallFiles = {
 
 local Directories = {
 	".OSRunner";
-	"APIs";
-	"Resources";
-	"Boot";
+	".OSRunner/APIs";
+	".OSRunner/Resources";
+	".OSRunner/Boot";
 }
 
-local Version = "1.2"
+local Version = "1.3"
 
 if not http then
 	print("You must have http enabled to install OSRunner")
