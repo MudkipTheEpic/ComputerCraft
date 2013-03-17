@@ -11,7 +11,6 @@ term.setTextColor(colors.gray)
 term.write("Press F5 for OSRunner options")
 
 local function CenterPrint(Text, Line)
-
 	term.setCursorPos((W-#Text)/2, Line)
 	print(Text)
 end 
@@ -26,9 +25,10 @@ local function StartLoader()
 	term.setBackgroundColor(colors.red)
 	term.setTextColor(colors.white)
 	CenterPrint("OSRunner Options", 1)
-	term.setCursorPos(2, 12)
+	term.setBackgroundColor(colors.lightGray)
+	term.setCursorPos(4, 12)
 	write("Back")
-	term.setCursorPos(44, 12)
+	term.setCursorPos(45, 12)
 	write("Next")
 end 
 
