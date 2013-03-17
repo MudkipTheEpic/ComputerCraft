@@ -164,7 +164,7 @@ local function sandbox(directory)
 		if file==sandboxed then return "/" end
 		return oFs.getName(file)
 	end
-	
+
 	function fs.makeDir(dir)
 		dir=sandboxed..dir or sandboxed
 		return oFs.makeDir(dir)
@@ -245,12 +245,14 @@ for k,v in pairs(fs.list("rom/help")) do
 	cp("rom/help/"..v)
 end
 
-local gI=http.get(urlinstaller)
-local text=gI.readAll()
-gI.close()
-local wI=fs.open(dir..filepath,"w")
-wi.write(text)
-wI.close()
+if urlinstaller then
+	local gI=http.get(urlinstaller)
+	local text=gI.readAll()
+	gI.close()
+	local wI=fs.open(dir..filepath,"w")
+	wi.write(text)
+	wI.close()
+end 
 
 
 else
