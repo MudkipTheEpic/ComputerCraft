@@ -1,4 +1,5 @@
-local function loadSandbox(...)
+sandbox={}
+function sandbox.load(...)
 --[[
 OsRunner: by MudkipTheEpic
 Feel free to redistribute and modify this, but keep these lines in please.
@@ -6,8 +7,8 @@ Thanks,
   Mudkip
 ]]--
 
-local function insertOSFiles()
---beta stub :P
+local function insertOSFiles(filepath)
+  shell.run(filepath)
 end
 
 printStuff=true --Change to see printed stuff or not.
@@ -218,10 +219,11 @@ end
 local args={...}
 dir=args[1].."/"
 OS=args[2] or "CraftOS "..os.version()
+filepath=args[3]
 
 
 
-if not fs.isDir(dir) then
+if not fs.isDir(dir) then local firstTime=true
 fs.delete(dir) fs.makeDir(dir)
 
 clear()
@@ -242,7 +244,7 @@ end
 for k,v in pairs(fs.list("rom/help")) do
 	cp("rom/help/"..v)
 end
-insertOSFiles(OS)
+
 
 
 
@@ -284,5 +286,6 @@ os.shutdown=restore
 shell.exit()
 term.clear()
 term.setCursorPos(1,1)
+if firstTime then insertOSFiles(filepath) end
 os.run({},"rom/programs/shell")
 end
