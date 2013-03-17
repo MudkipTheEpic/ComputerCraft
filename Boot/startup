@@ -3,9 +3,27 @@ local W, H = term.getSize()
 
 term.setBackgroundColor(colors.lime)
 term.clear()
-paintutils.drawImage(StartScreen, 8, 1)
+paintutils.drawImage(StartScreen, 8, 4)
 
 term.setCursorPos(1, H)
 term.setBackgroundColor(colors.lime)
 term.setTextColor(colors.gray)
-term.write("Press F5 to open bootloader")
+term.write("Press F5 for OSRunner options")
+
+local function StartLoader()
+
+end 
+
+local function RunDef()
+
+end 
+
+os.startTimer(3)
+while true do
+	local event, p1, p2 = os.pullEvent()
+	if event == "key" and p1 == 63 then
+		StartLoader()
+	elseif event == "timer" then
+		RuvnDef()
+	end 
+end 
