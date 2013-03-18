@@ -39,9 +39,9 @@ local function Setup()
 	nfs.makeDir(".OSRunner/Kernels/CraftOS")
 end 
 
-local function Sand(Dir)
+local function Sand(Dir, OSName)
 	os.run({},".OSRunner/APIs/osrunner")
-	sandbox.load(Dir .. "/home", "CraftOS 1.5")
+	sandbox.load(Dir .. "/home", OSName)
 end 
 
 local function CheckFiles()
@@ -98,7 +98,7 @@ local function RunDef()
 	end 
 	term.setBackgroundColor(colors.lime)
 	term.clear()
-	Sand(".OSRunner/Kernels/CraftOS")
+	Sand(".OSRunner/Kernels/CraftOS", "CraftOS")
 end 
 
 os.startTimer(3)
