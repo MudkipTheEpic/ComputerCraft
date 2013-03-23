@@ -109,7 +109,7 @@ local function StartLoader()
 						local dir=readConf.readLine()
 						local OSName=readConf.readLine()
 						local setupFile=readConf.readLine()
-						local setupURL=readconf.readLine()
+						local setupURL=readConf.readLine()
 						readConf.close()
 						if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
 							Sand(dir,OSName,setupFile,setupURL)
