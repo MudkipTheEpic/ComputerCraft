@@ -296,6 +296,6 @@ os.shutdown=restore
 shell.exit()
 term.clear()
 term.setCursorPos(1,1)
-if firstTime then activateInstaller(filepath) end
+if firstTime then shell.run("filepath") end
 os.run({},"rom/programs/shell")
 end
