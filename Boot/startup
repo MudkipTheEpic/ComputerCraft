@@ -105,7 +105,7 @@ local function StartLoader()
 					elseif x >= 2 and x <= 17 and y==17 then
 						runSettings()
 					elseif x >= 22 and x <= 30 and y==16 then
-						local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS])
+						local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
 						local dir=readConf.readLine()
 						local OSName=readConf.readLine()
 						local setupFile=readConf.readLine()
