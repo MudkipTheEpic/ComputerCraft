@@ -253,7 +253,7 @@ if urlinstaller then
 	local text=gI.readAll()
 	gI.close()
 	local wI=fs.open(dir..filepath,"w")
-	wi.write(text)
+	wI.write(text)
 	wI.close()
 end 
 
