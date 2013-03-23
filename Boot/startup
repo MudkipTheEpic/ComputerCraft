@@ -89,7 +89,7 @@ local function StartLoader()
 		term.setCursorPos(40,17)
 		if currentOS==#OSList then term.setTextColor(colors.gray) end
 		write("Last")
-		if currentOS==#OSList then term.setTExtColor(colors.black) end
+		if currentOS==#OSList then term.setTextColor(colors.black) end
 		term.setBackgroundColor(colors.lightGray)
 		term.setCursorPos(2, 3)
 		term.write(string.rep(" ", W - 2))
