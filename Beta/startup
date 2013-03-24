@@ -109,7 +109,7 @@ local function StartLoader()
 		term.setCursorPos(2,19)
 		term.setBackgroundColor(colors.gray)
 		term.setTextColor(colors.white)
-		CenterWrite("Default OS: "..defaultOS)
+		CenterWrite("Default OS: "..defaultOS,H-1)
 		local event,btw,x,y=os.pullEventRaw("mouse_click")
 		if x >= 4 and x <= 7 and y==12 and currentOS > 1 then
 			currentOS=currentOS-1
