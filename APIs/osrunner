@@ -66,18 +66,15 @@ end
 end
 
 local function md(d)
-	term.clearLine()
-	if printStuff then write("Making directory "..d.."...\n") end
-	sleep(0)
+	os.queueEvent(" ")
+	os.pullEventRaw()
 	return fs.makeDir(dir.."/"..d)
 end
 
 local function cp(f)
-	if printStuff then write("Importing "..f.." to "..dir.."...\n") end
-	sleep(0)
-	local function scrapfunc() return fs.copy(f,dir.."/"..f) end
-	local ok=pcall(scrapfunc)
-	return ok
+	os.queueEvent(" ")
+	os.pullEventRaw()
+	return pcall(fs.copy,f,dir.."/"..f)
 end
 
 local function clear()
@@ -199,7 +196,7 @@ local function sandbox(directory)
 		if table==fs then errorout() end
 		return orset(table,...)
 	end
-]]
+	]]
 	function os.reboot()
 		shell.exit()
 		os.run({},"rom/programs/shell")
@@ -209,7 +206,7 @@ local function sandbox(directory)
 	for k,v in bPair(fs) do
 		table.insert(protectedFuncs,v)
 	end
-]]
+	]]
 end
 
 local function restore()
@@ -236,8 +233,13 @@ urlinstaller=args[4]
 
 if not fs.isDir(dir) then local firstTime=true
 	fs.delete(dir) fs.makeDir(dir)
-
+	term.setBackgroundColor(colors.black)
+	term.setTextColor(colors.white)
 	clear()
+	local mx,my=term.getSize()
+	term.setCursorPos(1, math.floor(my/2))
+	centerPrint("Creating OS Virtual Environment")
+	centerPrint("Please wait...")
 	if printStuff then centerPrint("Creating OS Environment for directory "..dir..".") end
 
 	md("rom")
@@ -271,6 +273,8 @@ else
 
 end
 
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
 term.clear()
 term.setCursorPos(1,1)
 
@@ -304,9 +308,10 @@ os.shutdown=function()
 	term.setTextColor(colors.white)
 	term.setBackgroundColor(colors.black)
 	term.clear()
-	term.setCursorPos(1, 1)
-	print("Done!")
-	sleep(1)
+	local mx,my=term.getSize()
+	term.setCursorPos(1, math.floor(my/2))
+	centerPrint("Done loading OS, rebooting...")
+	pcall(sleep,1.5)
 	os.reboot()
 end
 
@@ -315,5 +320,5 @@ term.setTextColor(colors.white)
 term.clear()
 term.setCursorPos(1,1)
 if firstTime and filepath then queue(filepath) end
-os.run({},"rom/programs/shell")
+dofile("rom/programs/shell")
 end
