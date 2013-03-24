@@ -109,16 +109,21 @@ local function StartLoader()
 		term.setCursorPos(2,19)
 		term.setBackgroundColor(colors.gray)
 		term.setTextColor(colors.white)
-		CenterWrite("Default OS: "..defaultOS,H-1)
+		CenterWrite("Default OS: "..defaultOS,H)
 		local event,btw,x,y=os.pullEventRaw("mouse_click")
 		if x >= 4 and x <= 7 and y==12 and currentOS > 1 then
 			currentOS=currentOS-1
 		elseif x >= 45 and x <= 48 and y==12 and currentOS < #OSList then
 			currentOS=currentOS+1
 		elseif x >= 4 and x <= 12 and y==15 and fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-			fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
-			term.setTextColor(colors.black)
-			CenterPrint("Deleted "..OSList[currentOS],5)
+			if not defaultOS==OSList[currentOS] then
+				fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
+				term.setTextColor(colors.black)
+				CenterPrint("Deleted "..OSList[currentOS],5)
+			else
+				term.setTextColor(colors.black)
+				CenterPrint("Cannot delete default OS!",5)
+			end
 			sleep(1)
 		elseif x >= 2 and x <= 17 and y==17 then
 			while true do
@@ -223,8 +228,18 @@ local function RunDef()
 	local handle = fs.open("/.OSRunner/osConfig","r")
 	defaultOS = handle.readLine()
 	handle.close()
-	Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
-end 
+	if fs.exists(".OSRunner/Kernels/"..defaultOS) then
+		Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
+	else
+		local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
+		local dir=readConf.readLine()
+		local OSName=readConf.readLine()
+		local setupFile=readConf.readLine()
+		local setupURL=readConf.readLine()
+		readConf.close()
+		Sand(dir,OSName,setupFile,setupURL)
+	end 
+end
 
 os.startTimer(3)
 while true do
