@@ -17,6 +17,7 @@ local function CenterPrint(Text, Line)
 	else
 	term.setCursorPos((W-#Text)/2, line)
 	print(Text)
+	end
 end 
 
 local function CenterWrite(Text, Line)
