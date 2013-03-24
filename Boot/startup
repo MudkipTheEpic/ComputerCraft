@@ -71,9 +71,13 @@ local function StartLoader()
 		term.setBackgroundColor(colors.lightGray)
 		term.setTextColor(colors.black)
 		term.setCursorPos(4, 12)
+		if currentOS==1 then term.setTextColor(colors.gray) end
 		write("Back")
+		if currentOS==1 then term.setTextColor(colors.black) end
 		term.setCursorPos(45, 12)
+		if currentOS==#OSList then term.setTextColor(colors.gray) end
 		write("Next")
+		if currentOS==#OSList then term.setTextColor(colors.black) end
 		term.setCursorPos(4, 15)
 		if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then term.setTextColor(colors.gray) end
 		write("Delete OS")
@@ -98,56 +102,62 @@ local function StartLoader()
 		local event,btw,x,y=os.pullEventRaw("mouse_click")
 		if x >= 4 and x <= 7 and y==12 and currentOS > 1 then
 			currentOS=currentOS-1
-			elseif x >= 45 and x <= 48 and y==12 and currentOS < #OSList then
-				currentOS=currentOS+1
-				elseif x >= 4 and x <= 12 and y==15 and fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-					fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
-					elseif x >= 2 and x <= 17 and y==17 then
-						runSettings()
-					elseif x >= 22 and x <= 30 and y==16 then
-						local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
-						local dir=readConf.readLine()
-						local OSName=readConf.readLine()
-						local setupFile=readConf.readLine()
-						local setupURL=readConf.readLine()
-						readConf.close()
-						if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-							Sand(dir,OSName,setupFile,setupURL)
-						else
-							Sand(dir,OSName)
-						end
-						break
-					elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
-						currentOS=1
-					elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
-						currentOS=#OSList
-					end
-				end 
+		elseif x >= 45 and x <= 48 and y==12 and currentOS < #OSList then
+			currentOS=currentOS+1
+		elseif x >= 4 and x <= 12 and y==15 and fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
+			fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
+			term.setTextColor(colors.black)
+			CenterPrint("Deleted "..OSList[currentOS],5)
+		elseif x >= 2 and x <= 17 and y==17 then
+			settings()
+		elseif x >= 22 and x <= 30 and y==16 then
+			local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
+			local dir=readConf.readLine()
+			local OSName=readConf.readLine()
+			local setupFile=readConf.readLine()
+			local setupURL=readConf.readLine()
+			readConf.close()
+			if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
+				Sand(dir,OSName,setupFile,setupURL)
+			else
+				Sand(dir,OSName)
 			end
+			break
+		elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
+			currentOS=1
+		elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
+			currentOS=#OSList
+		end
+	end 
+end
 
-			local function RunDef()
-				local ShouldSet = false
-				for i,v in pairs(ShouldExist) do
-					if not nfs.exists(v) then
-						ShouldSet = true
-					end 
-				end 
-				if ShouldSet == true then
-					Setup()
-				end 
-				term.setBackgroundColor(colors.lime)
-				term.clear()
-				Sand(".OSRunner/Kernels/CraftOS", "CraftOS")
-			end 
+local function RunDef()
+	local ShouldSet = false
+	for i,v in pairs(ShouldExist) do
+		if not nfs.exists(v) then
+			ShouldSet = true
+		end 
+	end 
+	if ShouldSet == true then
+		Setup()
+	end 
+	term.setBackgroundColor(colors.lime)
+	term.clear()
+	Sand(".OSRunner/Kernels/CraftOS", "CraftOS")
+end 
 
-			os.startTimer(3)
-			while true do
-				local event, p1, p2 = os.pullEvent()
-				if event == "key" and p1 == 63 then
-					StartLoader()
-					break
-					elseif event == "timer" then
-						RunDef()
-						break
-					end 
-				end 
+local function settings()
+	-- Snippet
+end
+
+os.startTimer(3)
+while true do
+	local event, p1, p2 = os.pullEvent()
+	if event == "key" and p1 == 63 then
+		StartLoader()
+		break
+	elseif event == "timer" then
+		RunDef()
+		break
+	end 
+end 

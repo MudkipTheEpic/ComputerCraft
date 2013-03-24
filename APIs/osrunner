@@ -7,14 +7,23 @@ Thanks,
   Mudkip
 ]]--
 
-local function activateInstaller(filepath)
-if filepath then
-  shell.run(filepath)
-end
+local firstTime=false
+
+local function queue(word)
+	for p=1,#word do
+		os.queueEvent("char",word:sub(p,p))
+	end
+	os.queueEvent("key",keys.enter)
 end
 
-sandbox.load=nil
-printStuff=true --Change to see printed stuff or not.
+local function activateInstaller(filepath)
+	if filepath then
+		shell.run(filepath)
+	end
+end
+
+sandbox=nil
+printStuff=false --Change to see printed stuff or not.
 
 --Backup FS declaration...
 local oFs={}
@@ -66,8 +75,8 @@ end
 local function cp(f)
 	if printStuff then write("Importing "..f.." to "..dir.."...\n") end
 	sleep(0)
-        local function scrapfunc() return fs.copy(f,dir.."/"..f) end
-        local ok=pcall(scrapfunc)
+	local function scrapfunc() return fs.copy(f,dir.."/"..f) end
+	local ok=pcall(scrapfunc)
 	return ok
 end
 
@@ -200,7 +209,7 @@ local function sandbox(directory)
 		table.insert(protectedFuncs,v)
 	end
 	]]
-		
+
 
 end
 
@@ -227,35 +236,35 @@ urlinstaller=args[4]
 
 
 if not fs.isDir(dir) then local firstTime=true
-fs.delete(dir) fs.makeDir(dir)
+	fs.delete(dir) fs.makeDir(dir)
 
-clear()
-if printStuff then centerPrint("Creating OS Environment for directory "..dir..".") end
+	clear()
+	if printStuff then centerPrint("Creating OS Environment for directory "..dir..".") end
 
-md("rom")
-md("rom/programs")
-md("rom/programs/secret")
-md("rom/apis")
-md("rom/help")
-cp("rom/startup")
-for k,v in pairs(fs.list("rom/programs")) do
-	cp("rom/programs/"..v)
-end
-for k,v in pairs(fs.list("rom/apis")) do
-	cp("rom/apis/"..v)
-end
-for k,v in pairs(fs.list("rom/help")) do
-	cp("rom/help/"..v)
-end
+	md("rom")
+	md("rom/programs")
+	md("rom/programs/secret")
+	md("rom/apis")
+	md("rom/help")
+	cp("rom/startup")
+	for k,v in pairs(fs.list("rom/programs")) do
+		cp("rom/programs/"..v)
+	end
+	for k,v in pairs(fs.list("rom/apis")) do
+		cp("rom/apis/"..v)
+	end
+	for k,v in pairs(fs.list("rom/help")) do
+		cp("rom/help/"..v)
+	end
 
-if urlinstaller then
-	local gI=http.get(urlinstaller)
-	local text=gI.readAll()
-	gI.close()
-	local wI=fs.open(dir..filepath,"w")
-	wI.write(text)
-	wI.close()
-end 
+	if urlinstaller then
+		local gI=http.get(urlinstaller)
+		local text=gI.readAll()
+		gI.close()
+		local wI=fs.open(dir..filepath,"w")
+		wI.write(text)
+		wI.close()
+	end 
 
 
 else
@@ -270,23 +279,23 @@ term.setCursorPos(1,1)
 
 
 if printStuff then write("Running environment for OS: \""..OS.."\" in 3")
-for i=1,2 do
-	sleep(.33)
-	write(".")
-end
-sleep(0.33)
-write("2")
-for i=1,2 do
-	sleep(.33)
-	write(".")
-end
-sleep(0.33)
-write("1")
-for i=1,2 do
-	sleep(.33)
-	write(".")
-end
-sleep(0.33)
+	for i=1,2 do
+		sleep(.33)
+		write(".")
+	end
+	sleep(0.33)
+	write("2")
+	for i=1,2 do
+		sleep(.33)
+		write(".")
+	end
+	sleep(0.33)
+	write("1")
+	for i=1,2 do
+		sleep(.33)
+		write(".")
+	end
+	sleep(0.33)
 end
 
 sandbox(dir)
@@ -294,8 +303,10 @@ sandbox(dir)
 os.shutdown=restore
 
 shell.exit()
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
 term.clear()
 term.setCursorPos(1,1)
-if firstTime then shell.run("filepath") end
+if firstTime and filepath then queue(filepath) end
 os.run({},"rom/programs/shell")
 end
