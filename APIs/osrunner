@@ -320,5 +320,5 @@ term.setTextColor(colors.white)
 term.clear()
 term.setCursorPos(1,1)
 if firstTime and filepath then queue(filepath) end
-dofile("rom/programs/shell")
+os.run({},"rom/programs/shell")
 end
