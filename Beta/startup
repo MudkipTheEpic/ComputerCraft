@@ -11,17 +11,11 @@ local ShouldExist = {
 }
 
 local function CenterPrint(Text, Line)
-	if not Line then local _,line=term.getCursorPos() end
-	if Line then
 	term.setCursorPos((W-#Text)/2, Line)
-	else
-	term.setCursorPos((W-#Text)/2, line)
 	print(Text)
-	end
 end 
 
 local function CenterWrite(Text, Line)
-	if not Line then local _,Line=term.getCursorPos() end
 	term.setCursorPos((W-#Text)/2, Line)
 	write(Text)
 end 
@@ -57,8 +51,8 @@ term.setTextColor(colors.gray)
 local handle = fs.open("/.OSRunner/osConfig","r")
 defaultOS = handle.readLine()
 handle.close()
-CenterPrint("Running Default OS: "..defaultOS)
-CenterWrite("Press F5 for OSRunner Menu")
+CenterPrint("Running Default OS: "..defaultOS,H-1)
+CenterWrite("Press F5 for OSRunner Menu",H)
 
 
 
