@@ -50,15 +50,6 @@ end
 
 local function StartLoader()
 	local currentOS=1
-	local ShouldSet = false
-	for i,v in pairs(ShouldExist) do
-		if not nfs.exists(v) then
-			ShouldSet = true
-		end 
-	end 
-	if ShouldSet == true then
-		Setup()
-	end 
 	local OSList=nfs.list(".OSRunner/OSList/")
 	while true do
 		local Main = paintutils.loadImage(".OSRunner/Resources/main")
