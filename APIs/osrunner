@@ -86,7 +86,7 @@ local function clear()
 end
 
 local function sandbox(directory)
-	local sandboxed = directory.."/"
+	local sandboxed = directory
 
 	local rT={[1] = sandboxed, [2] = sandboxed.."rom"}
 
@@ -199,18 +199,16 @@ local function sandbox(directory)
 		if table==fs then errorout() end
 		return orset(table,...)
 	end
-
+]]
 	function os.reboot()
 		os.run({},"rom/programs/shell")
 	end
-
+--[[
 	local protectedFuncs={setfenv,setmetatable,rawset,bPair}
 	for k,v in bPair(fs) do
 		table.insert(protectedFuncs,v)
 	end
-	]]
-
-
+]]
 end
 
 local function restore()
@@ -300,9 +298,17 @@ end
 
 sandbox(dir)
 
-os.shutdown=restore
+os.shutdown=function()
+	restore()
+	term.setTextColor(colors.white)
+	term.setBackgroundColor(colors.black)
+	term.clear()
+	term.setCursorPos(1, 1)
+	print("Done!")
+	sleep(1)
+	return false
+end
 
-shell.exit()
 term.setBackgroundColor(colors.black)
 term.setTextColor(colors.white)
 term.clear()
