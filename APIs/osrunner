@@ -201,6 +201,7 @@ local function sandbox(directory)
 	end
 ]]
 	function os.reboot()
+		shell.exit()
 		os.run({},"rom/programs/shell")
 	end
 --[[
@@ -306,7 +307,7 @@ os.shutdown=function()
 	term.setCursorPos(1, 1)
 	print("Done!")
 	sleep(1)
-	return false
+	os.reboot()
 end
 
 term.setBackgroundColor(colors.black)
