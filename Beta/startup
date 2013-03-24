@@ -11,8 +11,11 @@ local ShouldExist = {
 }
 
 local function CenterPrint(Text, Line)
-	if not Line then local _,Line=term.getCursorPos() end
+	if not Line then local _,line=term.getCursorPos() end
+	if Line then
 	term.setCursorPos((W-#Text)/2, Line)
+	else
+	term.setCursorPos((W-#Text)/2, line)
 	print(Text)
 end 
 
