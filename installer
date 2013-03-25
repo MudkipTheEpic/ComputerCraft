@@ -5,8 +5,10 @@ local InstallFiles = {
 	{"APIs/zip", ".OSRunner/APIs/zip"};
 	{"Resources/logo", ".OSRunner/Resources/logo"};
 	{"Resources/main", ".OSRunner/Resources/main"};
+	{"Resources/setscreen", ".OSRunner/Resources/setscreen"};
 	{"Boot/startup", ".OSRunner/Boot/startup"};
 	{"OSList/KREOS", ".OSRunner/OSList/KREOS"};
+	{"startup","startup"};
 }
 
 local Directories = {
