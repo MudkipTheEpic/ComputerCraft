@@ -10,20 +10,14 @@ local ShouldExist = {
 ".OSRunner/Kernels";
 }
 
-shell.run(".OSRunner/APIs/osrunner")
-
-term.setBackgroundColor(colors.lime)
-term.clear()
-paintutils.drawImage(StartScreen, 8, 4)
-
-term.setCursorPos(1, H)
-term.setBackgroundColor(colors.lime)
-term.setTextColor(colors.gray)
-term.write("Press F5 for OSRunner options")
-
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
 	print(Text)
+end 
+
+local function CenterWrite(Text, Line)
+	term.setCursorPos((W-#Text)/2, Line)
+	write(Text)
 end 
 
 local function EraseData()
@@ -41,8 +35,56 @@ end
 
 local function Sand(Dir, OSName, SetupFile, SetupURL)
 	os.run({},".OSRunner/APIs/osrunner")
-	sandbox.load(Dir .. "/home", OSName, SetupFile, SetupURL)
+	sandbox.load(Dir, OSName, SetupFile, SetupURL)
 end 
+
+local function makeCustom()
+	local oldPull=os.pullEvent
+	os.pullEvent=os.pullEventRaw
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	term.clear()
+	term.setCursorPos(1,1)
+	print("What is your OS called?")
+	local cOSname=read()
+	if fs.exists(".OSRunner/OSList/"..cOSname) then printError("OS Name taken! D:") sleep(1) os.pullEvent=oldPull return false end
+	print("What is the pastebin ID for the installer?")
+	local pID=read()
+	local url="http://pastebin.com/raw.php?i="..pID
+	if not http.get(url) then printError("Invalid Pastebin ID! D:") sleep(1) os.pullEvent=oldPull return false end
+	print("All set! Making OS Entry...")
+	local cDir=".OSRunner/Kernels/"..cOSname
+	local stF="setup"
+	local makeOS=fs.open(".OSRunner/OSList/"..cOSname,"w")
+	makeOS.writeLine(cDir)
+	makeOS.writeLine(cOSname)
+	makeOS.writeLine(stF)
+	makeOS.writeLine(url)
+	makeOS.close()
+	print("Made OS!")
+	sleep(1)
+	os.pullEvent=oldPull
+	return true
+end
+
+
+shell.run(".OSRunner/APIs/osrunner")
+
+term.setBackgroundColor(colors.lime)
+term.clear()
+paintutils.drawImage(StartScreen, 8, 4)
+
+term.setCursorPos(1, H-1)
+term.setBackgroundColor(colors.lime)
+term.setTextColor(colors.gray)
+local handle = fs.open("/.OSRunner/osConfig","r")
+defaultOS = handle.readLine()
+handle.close()
+CenterPrint("Running Default OS: "..defaultOS,H-1)
+CenterWrite("Press F5 for OSRunner Menu",H)
+
+
+
 
 local function CheckFiles()
 
@@ -50,17 +92,14 @@ end
 
 local function StartLoader()
 	local currentOS=1
-	local ShouldSet = false
-	for i,v in pairs(ShouldExist) do
-		if not nfs.exists(v) then
-			ShouldSet = true
-		end 
-	end 
-	if ShouldSet == true then
-		Setup()
-	end 
 	local OSList=nfs.list(".OSRunner/OSList/")
+	local handle = fs.open("/.OSRunner/osConfig","r")
+	local defaultOS = handle.readLine()
+	handle.close()
 	while true do
+		local handle = fs.open("/.OSRunner/osConfig","r")
+		defaultOS = handle.readLine()
+		handle.close()
 		local Main = paintutils.loadImage(".OSRunner/Resources/main")
 		term.setBackgroundColor(colors.white)
 		term.clear()
@@ -99,37 +138,106 @@ local function StartLoader()
 		term.write(string.rep(" ", W - 2))
 		local v=OSList[currentOS]
 		CenterPrint(v, 3)
+		term.setCursorPos(2,19)
+		term.setBackgroundColor(colors.gray)
+		term.setTextColor(colors.white)
+		CenterWrite("Default OS: "..defaultOS,H)
 		local event,btw,x,y=os.pullEventRaw("mouse_click")
-		if x >= 4 and x <= 7 and y==12 and currentOS > 1 then
-			currentOS=currentOS-1
-		elseif x >= 45 and x <= 48 and y==12 and currentOS < #OSList then
-			currentOS=currentOS+1
-		elseif x >= 4 and x <= 12 and y==15 and fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-			fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
-			term.setTextColor(colors.black)
-			CenterPrint("Deleted "..OSList[currentOS],5)
-			sleep(1)
-		elseif x >= 2 and x <= 17 and y==17 then
-			term.setTextColor(colors.black)
-			CenterPrint("Not implemented!",5)
-			sleep(1)
-		elseif x >= 22 and x <= 30 and y==16 then
-			local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
-			local dir=readConf.readLine()
-			local OSName=readConf.readLine()
-			local setupFile=readConf.readLine()
-			local setupURL=readConf.readLine()
-			readConf.close()
-			if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-				Sand(dir,OSName,setupFile,setupURL)
-			else
-				Sand(dir,OSName)
+		if event=="mouse_click" then
+			if x >= 4 and x <= 7 and y==12 and currentOS > 1 then
+				currentOS=currentOS-1
+			elseif x >= 45 and x <= 48 and y==12 and currentOS < #OSList then
+				currentOS=currentOS+1
+			elseif x >= 4 and x <= 12 and y==15 and fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
+					fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
+					term.setTextColor(colors.black)
+					CenterPrint("Deleted "..OSList[currentOS],5)
+				sleep(1)
+			elseif x >= 2 and x <= 17 and y==17 then
+				while true do
+					term.clear()
+					local gui = paintutils.loadImage("/.OSRunner/systemSettings")
+					paintutils.drawImage(gui,1,1)
+					term.setBackgroundColor(colors.red)
+					term.setTextColor(colors.white)
+					CenterPrint("System Settings",1)
+					term.setBackgroundColor(colors.lightGray)
+					term.setTextColor(colors.black)
+					CenterPrint(OSList[currentOS],3)
+					term.setCursorPos(3,5)
+					local handle = fs.open("/.OSRunner/osConfig","r")
+					defaultOS = handle.readLine()
+					handle.close()
+					if defaultOS == OSList[currentOS] then
+						term.setBackgroundColor(colors.lime)
+					else
+						term.setBackgroundColor(colors.red)
+					end
+					term.write("Default OS")
+					term.setBackgroundColor(colors.lightGray)
+					term.setTextColor(colors.black)
+					term.setCursorPos(4, 12)
+					if currentOS==1 then term.setTextColor(colors.gray) end
+					write("Back")
+					if currentOS==1 then term.setTextColor(colors.black) end
+					term.setCursorPos(45, 12)
+					if currentOS==#OSList then term.setTextColor(colors.gray) end
+					write("Next")
+					if currentOS==#OSList then term.setTextColor(colors.black) end
+					term.setCursorPos(2,15)
+					write("   Custom OS   ")
+					term.setCursorPos(2,17)
+					write("  Main Screen  ")
+					local handle = fs.open("/.OSRunner/osConfig","r")
+					defaultOS = handle.readLine()
+					handle.close()
+					local _,p1,xPos,yPos = os.pullEventRaw("mouse_click")
+					if event=="mouse_click" and p1 == 1 then
+						if (xPos >=3 and xPos <=12 and yPos == 5) then
+							if defaultOS == OSList[currentOS] then
+								term.setCursorPos(3,5)
+								term.setBackgroundColor(colors.red)
+								term.write("Default OS")
+								local handle = fs.open("/.OSRunner/osConfig","w")
+								handle.write(os.version())
+								handle.close()
+							elseif defaultOS ~= OSList[currentOS] then
+								term.setCursorPos(3,5)
+								term.setBackgroundColor(colors.lime)
+								term.write("Default OS")
+								local handle = fs.open("/.OSRunner/osConfig","w")
+								handle.writeLine(OSList[currentOS])
+								handle.close()
+							end
+						elseif (xPos >= 2 and xPos <=8 and yPos == 12) and OSList[currentOS-1] ~= nil then
+							currentOS = (currentOS-1)
+						elseif (xPos >= 43 and xPos <= 50 and yPos ==12) and #OSList >= currentOS+1 then
+							currentOS = (currentOS+1)
+						elseif (xPos >=2 and xPos <=16 and yPos ==17) then
+							return StartLoader()
+						elseif (xPos >= 5 and xPos <= 13 and yPos == 15) then
+							makeCustom()
+						end
+					end	
+				end
+			elseif x >= 22 and x <= 30 and y==16 then
+				local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
+				local dir=readConf.readLine()
+				local OSName=readConf.readLine()
+				local setupFile=readConf.readLine()
+				local setupURL=readConf.readLine()
+				readConf.close()
+				if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
+					Sand(dir,OSName,setupFile,setupURL)
+				else
+					Sand(dir,OSName)
+				end
+				break
+			elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
+				currentOS=1
+			elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
+				currentOS=#OSList
 			end
-			break
-		elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
-			currentOS=1
-		elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
-			currentOS=#OSList
 		end
 	end 
 end
@@ -146,11 +254,20 @@ local function RunDef()
 	end 
 	term.setBackgroundColor(colors.lime)
 	term.clear()
-	Sand(".OSRunner/Kernels/CraftOS", "CraftOS")
-end 
-
-local function settings()
-	-- Snippet
+	local handle = fs.open("/.OSRunner/osConfig","r")
+	defaultOS = handle.readLine()
+	handle.close()
+	if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS==os.version() then
+		Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
+	else
+		local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
+		local dir=readConf.readLine()
+		local OSName=readConf.readLine()
+		local setupFile=readConf.readLine()
+		local setupURL=readConf.readLine()
+		readConf.close()
+		Sand(dir,OSName,setupFile,setupURL)
+	end 
 end
 
 os.startTimer(3)
@@ -163,4 +280,4 @@ while true do
 		RunDef()
 		break
 	end 
-end 
+end
