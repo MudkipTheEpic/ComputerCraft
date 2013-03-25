@@ -179,6 +179,16 @@ local function sandbox(directory)
 		return oFs.makeDir(dir)
 	end
 	
+	function fs.getSize(filepath)
+		filepath=sandboxed..filepath or sandboxed
+		return oFs.getSize(filepath)
+	end
+
+	function fs.getDrive(filepath)
+		filepath=sandboxed..filepath or sandboxed
+		return oFs.getDrive(filepath)
+	end
+
 	--[[
 	function setfenv(func,...)
 		for k,v in bPair(protectedFuncs) do
