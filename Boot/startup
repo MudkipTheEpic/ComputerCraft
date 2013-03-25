@@ -68,7 +68,7 @@ local function makeCustom()
 end
 
 
-if not fs.exists(".OSRunner/osConfig") then local makeConf=fs.open(".OSRunner/osConfig",w) makeConf.writeLine(os.version()) makeConf.close() end
+if not fs.exists(".OSRunner/osConfig") then local makeConf=fs.open(".OSRunner/osConfig","w") makeConf.writeLine(os.version()) makeConf.close() end
 
 shell.run(".OSRunner/APIs/osrunner")
 
