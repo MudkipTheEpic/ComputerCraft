@@ -236,7 +236,7 @@ local function RunDef()
 	local handle = fs.open("/.OSRunner/osConfig","r")
 	defaultOS = handle.readLine()
 	handle.close()
-	if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS=os.version() then
+	if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS==os.version() then
 		Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
 	else
 		local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
