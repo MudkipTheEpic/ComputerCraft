@@ -158,7 +158,7 @@ local function StartLoader()
 			elseif x >= 2 and x <= 17 and y==17 then
 				while true do
 					term.clear()
-					local gui = paintutils.loadImage("/.OSRunner/systemSettings")
+					local gui = paintutils.loadImage("/.OSRunner/Resources/setscreen")
 					paintutils.drawImage(gui,1,1)
 					term.setBackgroundColor(colors.red)
 					term.setTextColor(colors.white)

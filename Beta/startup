@@ -74,6 +74,8 @@ term.setBackgroundColor(colors.lime)
 term.clear()
 paintutils.drawImage(StartScreen, 8, 4)
 
+if not fs.exists("/OSRunner/osConfig") then local makeConfig=fs.open("/OSRunner/osConfig","w") makeConfig.write(os.version()) makeConfig.close() end
+
 term.setCursorPos(1, H-1)
 term.setBackgroundColor(colors.lime)
 term.setTextColor(colors.gray)
@@ -156,7 +158,7 @@ local function StartLoader()
 			elseif x >= 2 and x <= 17 and y==17 then
 				while true do
 					term.clear()
-					local gui = paintutils.loadImage("/.OSRunner/systemSettings")
+					local gui = paintutils.loadImage("/.OSRunner/Resources/setscreen")
 					paintutils.drawImage(gui,1,1)
 					term.setBackgroundColor(colors.red)
 					term.setTextColor(colors.white)
