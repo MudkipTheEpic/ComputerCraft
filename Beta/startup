@@ -55,7 +55,7 @@ local function makeCustom()
 	print("All set! Making OS Entry...")
 	local cDir=".OSRunner/Kernels/"..cOSname
 	local stF="setup"
-	local makeOS=fs.open(".OSRunner/OSList/"..cOSname)
+	local makeOS=fs.open(".OSRunner/OSList/"..cOSname,"w")
 	makeOS.writeLine(cDir)
 	makeOS.writeLine(cOSname)
 	makeOS.writeLine(stF)
