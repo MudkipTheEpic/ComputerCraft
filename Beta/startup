@@ -38,6 +38,35 @@ local function Sand(Dir, OSName, SetupFile, SetupURL)
 	sandbox.load(Dir, OSName, SetupFile, SetupURL)
 end 
 
+local function makeCustom()
+	local oldPull=os.pullEvent
+	os.pullEvent=os.pullEventRaw
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	term.clear()
+	term.setCursorPos(1,1)
+	print("What is your OS called?")
+	local cOSname=read()
+	if fs.exists(".OSRunner/OSList/"..cOSname) then printError("OS Name taken! D:") sleep(1) os.pullEvent=oldPull return false end
+	print("What is the pastebin ID for the installer?")
+	local pID=read()
+	local url="http://pastebin.com/raw.php?i="..pID
+	if not http.get(url) then printError("Invalid Pastebin ID! D:") sleep(1) os.pullEvent=oldPull return false end
+	print("All set! Making OS Entry...")
+	local cDir=".OSRunner/Kernels/"..cOSname
+	local stF="setup"
+	local makeOS=fs.open(".OSRunner/OSList/"..cOSname)
+	makeOS.writeLine(cDir)
+	makeOS.writeLine(cOSname)
+	makeOS.writeLine(stF)
+	makeOS.writeLine(url)
+	makeOS.close()
+	print("Made OS!")
+	sleep(1)
+	os.pullEvent=oldPull
+	return true
+end
+
 
 shell.run(".OSRunner/APIs/osrunner")
 
@@ -156,9 +185,7 @@ local function StartLoader()
 					write("Next")
 					if currentOS==#OSList then term.setTextColor(colors.black) end
 					term.setCursorPos(2,15)
-					term.setTextColor(colors.gray)
 					write("   Custom OS   ")
-					term.setTextColor(colors.black)
 					term.setCursorPos(2,17)
 					write("  Main Screen  ")
 					local handle = fs.open("/.OSRunner/osConfig","r")
@@ -188,6 +215,8 @@ local function StartLoader()
 							currentOS = (currentOS+1)
 						elseif (xPos >=2 and xPos <=16 and yPos ==17) then
 							return StartLoader()
+						elseif (xPos >= 5 and xPos <= 13 and yPos == 15) then
+							makeCustom()
 						end
 					end	
 				end
