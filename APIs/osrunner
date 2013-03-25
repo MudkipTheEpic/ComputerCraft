@@ -164,7 +164,7 @@ local function sandbox(directory)
 
 
 	function fs.list(dir)
-		dir=dir..sandboxed or sandboxed
+		dir=sandboxed..dir or sandboxed
 		return oFs.list(dir)
 	end
 
