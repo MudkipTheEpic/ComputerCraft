@@ -199,6 +199,10 @@ local function sandbox(directory)
 	]]
 	function os.reboot()
 		shell.exit()
+		_G={}
+		for k,v in oPair(GB) do
+			_G[k]=v
+		end
 		os.run({},"rom/programs/shell")
 	end
 --[[
@@ -315,6 +319,11 @@ os.shutdown=function()
 	os.reboot()
 end
 
+local GB={}
+
+for k,v in oPair(_G) do
+	GB[k]=v
+end
 term.setBackgroundColor(colors.black)
 term.setTextColor(colors.white)
 term.clear()
