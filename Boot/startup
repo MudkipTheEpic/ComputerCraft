@@ -63,6 +63,8 @@ local function makeCustom()
 	makeOS.close()
 	print("Made OS!")
 	sleep(1)
+	local OSList=nfs.list(".OSRunner/OSList/")
+	table.sort(OSList)
 	os.pullEvent=oldPull
 	return true
 end
