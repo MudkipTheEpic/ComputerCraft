@@ -63,8 +63,6 @@ local function makeCustom()
 	makeOS.close()
 	print("Made OS!")
 	sleep(1)
-	local OSList=nfs.list(".OSRunner/OSList/")
-	table.sort(OSList)
 	os.pullEvent=oldPull
 	return true
 end
@@ -222,6 +220,8 @@ local function StartLoader()
 							return StartLoader()
 						elseif (xPos >= 5 and xPos <= 13 and yPos == 15) then
 							makeCustom()
+							local OSList=nfs.list(".OSRunner/OSList/")
+							table.sort(OSList)
 						end
 					end	
 				end
