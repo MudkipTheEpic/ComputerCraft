@@ -1,1 +1,9 @@
+if fs.exists(".OSRunner/rebootPath") then
+	local readReboot=fs.open(".OSRunner/rebootPath","r")
+	local dir=readReboot.readAll()
+	readReboot.close()
+	fs.delete(".OSRunner/rebootPath")
+	shell.run(".OSRunner/APIs/osrunner")
+	sandbox.load(dir,fs.getName(dir))
+end
 shell.run(".OSRunner/Boot/startup")

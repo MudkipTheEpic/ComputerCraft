@@ -208,8 +208,10 @@ local function sandbox(directory)
 	end
 	]]
 	function os.reboot()
-		shell.exit()
-		os.run({},"rom/programs/shell")
+		local writeReboot=oFs.open(".OSRunner/rebootPath","w")
+		writeReboot.write(sandboxed:sub(1,#sandboxed-1))
+		writeReboot.close()
+		oldReboot()
 	end
 --[[
 	local protectedFuncs={setfenv,setmetatable,rawset,bPair}
