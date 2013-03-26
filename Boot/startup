@@ -95,6 +95,7 @@ end
 local function StartLoader()
 	local currentOS=1
 	local OSList=nfs.list(".OSRunner/OSList/")
+	table.sort(OSList)
 	local handle = fs.open("/.OSRunner/osConfig","r")
 	local defaultOS = handle.readLine()
 	handle.close()
