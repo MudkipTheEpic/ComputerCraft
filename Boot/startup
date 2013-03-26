@@ -50,7 +50,7 @@ local function makeCustom()
 	if fs.exists(".OSRunner/OSList/"..cOSname) then printError("OS Name taken! D:") sleep(1) os.pullEvent=oldPull return false end
 	print("What is the pastebin ID for the installer?")
 	local pID=read()
-	local url="http://pastebin.com/raw.php?i="..pID
+	local url="http://pastebin.com/raw.php?i="..textutils.urlEncode(pID)
 	if not http.get(url) then printError("Invalid Pastebin ID! D:") sleep(1) os.pullEvent=oldPull return false end
 	print("All set! Making OS Entry...")
 	local cDir=".OSRunner/Kernels/"..cOSname
