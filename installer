@@ -8,6 +8,7 @@ local InstallFiles = {
 	{"Resources/setscreen", ".OSRunner/Resources/setscreen"};
 	{"Boot/startup", ".OSRunner/Boot/startup"};
 	{"OSList/KREOS", ".OSRunner/OSList/KREOS"};
+	{"OSList/EnderOS", ".OSRunner/OSList/EnderOS"};
 	{"startup","startup"};
 }
 
