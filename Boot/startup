@@ -277,7 +277,7 @@ end
 
 os.startTimer(3)
 while true do
-	local event, p1, p2 = os.pullEvent()
+	local event, p1, p2 = os.pullEventRaw()
 	if event == "key" and p1 == 63 then
 		StartLoader()
 		break
