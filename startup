@@ -7,6 +7,3 @@ if fs.exists(".OSRunner/rebootPath") then
 	sandbox.load(dir,fs.getName(dir))
 end
 shell.run(".OSRunner/Boot/startup")
-
-end
-for k,v 
