@@ -9,6 +9,7 @@ Thanks,
 
 local firstTime=false
 
+local oResolve=shell.resolve
 local function queue(word)
 	for p=1,#word do
 		os.queueEvent("char",word:sub(p,p))
@@ -21,6 +22,7 @@ local function activateInstaller(filepath)
 		shell.run(filepath)
 	end
 end
+
 
 sandbox=nil
 printStuff=false --Change to see printed stuff or not.
@@ -103,9 +105,17 @@ local function sandbox(directory)
 		err("Access denied",3)
 	end
 
+	local function returnResolved(path)
+		if path==nil then return sandboxed end
+		local nPath=oResolve(path)
+		if (nPath:sub(1,2)==".." and #nPath==2) or (nPath:sub(1,3)=="../") then return nil end
+		return sandboxed..path
+	end
+
 
 	function fs.open(f,v)
-		f=sandboxed..f or sandboxed
+		f=returnResolved(f)
+		if f==nil then return nil end
 		if isAllowed() then return oFs.open(f,v) end
 		if v ~= ("r" or "rb" or nil) then
 			if check(f) then
@@ -116,17 +126,20 @@ local function sandbox(directory)
 	end
 
 	function fs.exists(f)
-		f=sandboxed..f or sandboxed
+		f=returnResolved(f)
+		if f==nil then return false end
 		return oFs.exists(f)
 	end
 
 	function fs.isDir(f)
-		f=sandboxed..f or sandboxed
+		f=returnResolved(f)
+		if f==nil then return false end
 		return oFs.isDir(f)
 	end
 
 	function fs.delete(f)
-		f=sandboxed..f or sandboxed
+		f=returnResolved(f)
+		if f==nil then err("Invalid Path",2) return nil end
 		if isAllowed() then return oFs.delete(f) end
 		if check(f) then
 			errorout()
@@ -135,8 +148,9 @@ local function sandbox(directory)
 	end
 
 	function fs.copy(f,v)
-		f=sandboxed..f or sandboxed
-		v=sandboxed..v or sandboxed
+		f=returnResolved(f)
+		v=returnResolved(v)
+		if f==nil or v==nil then err("Invalid Path",2) end
 		if isAllowed() then return oFs.copy(f,v) end
 		if check(f) then
 			errorout()
@@ -145,8 +159,9 @@ local function sandbox(directory)
 	end
 
 	function fs.move(f,v)
-		f=sandboxed..f or sandboxed
-		v=sandboxed..v or sandboxed
+		f=returnResolved(f)
+		v=returnResolved(v)
+		if f==nil or v==nil then err("Invalid Path",2) end
 		if isAllowed() then return oFs.move(f,v) end
 		if check(f) then
 			errorout()
@@ -155,7 +170,8 @@ local function sandbox(directory)
 	end
 
 	function fs.isReadOnly(f)
-		f=sandboxed..f or sandboxed
+		f=returnResolved(f)
+		if f==nil then return false end
 		if check(f) then
 			return true
 		end
@@ -164,28 +180,32 @@ local function sandbox(directory)
 
 
 	function fs.list(dir)
-		dir=sandboxed..dir or sandboxed
+		dir=returnResolved(dir)
+		if dir==nil then err("Invalid Path",2) end
 		return oFs.list(dir)
 	end
 
 	function fs.getName(file)
 		file=sandboxed..file or sandboxed
-		if file==sandboxed then return "/" end
+		if file==sandboxed then return "root" end
 		return oFs.getName(file)
 	end
 
 	function fs.makeDir(dir)
-		dir=sandboxed..dir or sandboxed
+		dir=returnResolved(dir)
+		if dir==nil then err("Invalid Path",2) end
 		return oFs.makeDir(dir)
 	end
 	
 	function fs.getSize(filepath)
-		filepath=sandboxed..filepath or sandboxed
+		filepath=returnResolved(filepath)
+		if filepath==nil then err("Invalid Path",2) end
 		return oFs.getSize(filepath)
 	end
 
 	function fs.getDrive(filepath)
-		filepath=sandboxed..filepath or sandboxed
+		filepath=returnResolved(filepath)
+		if filepath==nil then err("Invalid Path",2) end
 		return oFs.getDrive(filepath)
 	end
 
