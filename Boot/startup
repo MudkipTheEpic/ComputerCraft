@@ -249,7 +249,7 @@ local function StartLoader()
 									pcall(setfenv,loadstring(cake),getfenv())
 									os.reboot()
 								elseif (x>=40 and x<=44 and y==11) then 
-									return startLoader()
+									return StartLoader()
 								end
 							end
 						end	
