@@ -248,70 +248,71 @@ local function StartLoader()
 									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
 									pcall(setfenv,loadstring(cake),getfenv())
 									os.reboot()
-									elseif (x>=40 and x<=44 and y==11) then 
-										return startLoader()
+								elseif (x>=40 and x<=44 and y==11) then 
+									return startLoader()
 								end
 							end
 						end	
 					end
-				elseif x >= 22 and x <= 30 and y==16 then
-					local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
-					local dir=readConf.readLine()
-					local OSName=readConf.readLine()
-					local setupFile=readConf.readLine()
-					local setupURL=readConf.readLine()
-					readConf.close()
-					if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-						Sand(dir,OSName,setupFile,setupURL)
-					else
-						Sand(dir,OSName)
-					end
-					break
-				elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
-					currentOS=1
-				elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
-					currentOS=#OSList
 				end
+			elseif x >= 22 and x <= 30 and y==16 then
+				local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
+				local dir=readConf.readLine()
+				local OSName=readConf.readLine()
+				local setupFile=readConf.readLine()
+				local setupURL=readConf.readLine()
+				readConf.close()
+				if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
+					Sand(dir,OSName,setupFile,setupURL)
+				else
+					Sand(dir,OSName)
+				end
+				break
+			elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
+				currentOS=1
+			elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
+				currentOS=#OSList
 			end
-		end 
-	end
+		end
+	end 
+end
 
-	local function RunDef()
-		local ShouldSet = false
-		for i,v in pairs(ShouldExist) do
-			if not nfs.exists(v) then
-				ShouldSet = true
-			end 
+local function RunDef()
+	local ShouldSet = false
+	for i,v in pairs(ShouldExist) do
+		if not nfs.exists(v) then
+			ShouldSet = true
 		end 
-		if ShouldSet == true then
-			Setup()
-		end 
-		term.setBackgroundColor(colors.lime)
-		term.clear()
-		local handle = fs.open("/.OSRunner/osConfig","r")
-		defaultOS = handle.readLine()
-		handle.close()
-		if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS==os.version() then
-			Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
-		else
-			local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
-			local dir=readConf.readLine()
-			local OSName=readConf.readLine()
-			local setupFile=readConf.readLine()
-			local setupURL=readConf.readLine()
-			readConf.close()
-			Sand(dir,OSName,setupFile,setupURL)
-		end 
-	end
+	end 
+	if ShouldSet == true then
+		Setup()
+	end 
+	term.setBackgroundColor(colors.lime)
+	term.clear()
+	local handle = fs.open("/.OSRunner/osConfig","r")
+	defaultOS = handle.readLine()
+	handle.close()
+	if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS==os.version() then
+		Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
+	else
+		local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
+		local dir=readConf.readLine()
+		local OSName=readConf.readLine()
+		local setupFile=readConf.readLine()
+		local setupURL=readConf.readLine()
+		readConf.close()
+		Sand(dir,OSName,setupFile,setupURL)
+	end 
+end
 
-	os.startTimer(3)
-	while true do
-		local event, p1, p2 = os.pullEventRaw()
-		if event == "key" and p1 == 63 then
-			StartLoader()
-			break
-		elseif event == "timer" then
-			RunDef()
-			break
-		end 
-	end
+os.startTimer(3)
+while true do
+	local event, p1, p2 = os.pullEventRaw()
+	if event == "key" and p1 == 63 then
+		StartLoader()
+		break
+	elseif event == "timer" then
+		RunDef()
+		break
+	end 
+end
