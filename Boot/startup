@@ -152,9 +152,9 @@ local function StartLoader()
 			elseif x >= 45 and x <= 48 and y==12 and currentOS < #OSList then
 				currentOS=currentOS+1
 			elseif x >= 4 and x <= 12 and y==15 and fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-					fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
-					term.setTextColor(colors.black)
-					CenterPrint("Deleted "..OSList[currentOS],5)
+				fs.delete(".OSRunner/Kernels/"..OSList[currentOS])
+				term.setTextColor(colors.black)
+				CenterPrint("Deleted "..OSList[currentOS],5)
 				sleep(1)
 			elseif x >= 2 and x <= 17 and y==17 then
 				while true do
@@ -189,8 +189,10 @@ local function StartLoader()
 					if currentOS==#OSList then term.setTextColor(colors.black) end
 					term.setCursorPos(2,15)
 					write("   Custom OS   ")
-					term.setCursorPos(2,17)
+					term.setCursorPos(35,15)
 					write("  Main Screen  ")
+					term.setCursorPos(14,17)
+					write("  Reinstall OSRunner  ")
 					local handle = fs.open("/.OSRunner/osConfig","r")
 					defaultOS = handle.readLine()
 					handle.close()
@@ -216,73 +218,99 @@ local function StartLoader()
 							currentOS = (currentOS-1)
 						elseif (xPos >= 43 and xPos <= 50 and yPos ==12) and #OSList >= currentOS+1 then
 							currentOS = (currentOS+1)
-						elseif (xPos >=2 and xPos <=16 and yPos ==17) then
+						elseif (xPos >=35 and xPos <=50 and yPos ==15) then
 							return StartLoader()
 						elseif (xPos >= 5 and xPos <= 13 and yPos == 15) then
 							makeCustom()
 							local OSList=nfs.list(".OSRunner/OSList/")
 							table.sort(OSList)
-						end
-					end	
+						elseif (xPos >= 14 and xPos <= 36 and yPos==17) then
+							term.setBackgroundColor(colors.white)
+							term.clear()
+							term.setCursorPos(1,1)
+							local ynM=paintutils.loadImage(".OSRunner/Resources/box")
+							paintutils.drawImage(ynM, 1, 1)
+							term.setBackgroundColor(colors.white)
+							centerPrint("Are you sure you want to reinstall OSRunner?",5)
+							centerPrint("All custom OS'es will be gone.",7)
+							term.setBackgroundColor(colors.lime)
+							term.setCursorPos(7,11)
+							write(" Yes ")
+							term.setBackgroundColor(colors.red)
+							term.setCursorPos(40,11)
+							write(" No ")
+							while true do
+								local e,btn,x,y=os.pullEventRaw("mouse_click")
+								if (x>=7 and x<=12 and y==11) then
+									term.setBackgroundColor(colors.white)
+									centerPrint("Reinstalling...",12)
+									pcall(sleep,0.5)
+									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
+									pcall(setfenv,loadstring(cake),getfenv())
+									os.reboot()
+									elseif (x>=40 and x<=44 and y=11) then return startLoader() break
+								end
+							end
+						end	
+					end
+				elseif x >= 22 and x <= 30 and y==16 then
+					local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
+					local dir=readConf.readLine()
+					local OSName=readConf.readLine()
+					local setupFile=readConf.readLine()
+					local setupURL=readConf.readLine()
+					readConf.close()
+					if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
+						Sand(dir,OSName,setupFile,setupURL)
+					else
+						Sand(dir,OSName)
+					end
+					break
+				elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
+					currentOS=1
+				elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
+					currentOS=#OSList
 				end
-			elseif x >= 22 and x <= 30 and y==16 then
-				local readConf=fs.open(".OSRunner/OSList/"..OSList[currentOS],"r")
-				local dir=readConf.readLine()
-				local OSName=readConf.readLine()
-				local setupFile=readConf.readLine()
-				local setupURL=readConf.readLine()
-				readConf.close()
-				if not fs.exists(".OSRunner/Kernels/"..OSList[currentOS]) then
-					Sand(dir,OSName,setupFile,setupURL)
-				else
-					Sand(dir,OSName)
-				end
-				break
-			elseif x >= 40 and x <= 44 and y==15 and currentOS > 1 then
-				currentOS=1
-			elseif x >= 40 and x <= 43 and y==17 and currentOS < #OSList then
-				currentOS=#OSList
 			end
-		end
-	end 
-end
-
-local function RunDef()
-	local ShouldSet = false
-	for i,v in pairs(ShouldExist) do
-		if not nfs.exists(v) then
-			ShouldSet = true
 		end 
-	end 
-	if ShouldSet == true then
-		Setup()
-	end 
-	term.setBackgroundColor(colors.lime)
-	term.clear()
-	local handle = fs.open("/.OSRunner/osConfig","r")
-	defaultOS = handle.readLine()
-	handle.close()
-	if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS==os.version() then
-		Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
-	else
-		local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
-		local dir=readConf.readLine()
-		local OSName=readConf.readLine()
-		local setupFile=readConf.readLine()
-		local setupURL=readConf.readLine()
-		readConf.close()
-		Sand(dir,OSName,setupFile,setupURL)
-	end 
-end
+	end
 
-os.startTimer(3)
-while true do
-	local event, p1, p2 = os.pullEventRaw()
-	if event == "key" and p1 == 63 then
-		StartLoader()
-		break
-	elseif event == "timer" then
-		RunDef()
-		break
-	end 
-end
+	local function RunDef()
+		local ShouldSet = false
+		for i,v in pairs(ShouldExist) do
+			if not nfs.exists(v) then
+				ShouldSet = true
+			end 
+		end 
+		if ShouldSet == true then
+			Setup()
+		end 
+		term.setBackgroundColor(colors.lime)
+		term.clear()
+		local handle = fs.open("/.OSRunner/osConfig","r")
+		defaultOS = handle.readLine()
+		handle.close()
+		if fs.exists(".OSRunner/Kernels/"..defaultOS) or defaultOS==os.version() then
+			Sand(".OSRunner/Kernels/"..defaultOS, defaultOS)
+		else
+			local readConf=fs.open(".OSRunner/OSList/"..defaultOS,"r")
+			local dir=readConf.readLine()
+			local OSName=readConf.readLine()
+			local setupFile=readConf.readLine()
+			local setupURL=readConf.readLine()
+			readConf.close()
+			Sand(dir,OSName,setupFile,setupURL)
+		end 
+	end
+
+	os.startTimer(3)
+	while true do
+		local event, p1, p2 = os.pullEventRaw()
+		if event == "key" and p1 == 63 then
+			StartLoader()
+			break
+		elseif event == "timer" then
+			RunDef()
+			break
+		end 
+	end
