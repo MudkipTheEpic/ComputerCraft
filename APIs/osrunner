@@ -9,7 +9,9 @@ Thanks,
 
 local firstTime=false
 
-local oResolve=shell.resolve
+local oCombine=fs.combine
+local oSub=string.sub
+local oLen=string.len
 local function queue(word)
 	for p=1,#word do
 		os.queueEvent("char",word:sub(p,p))
@@ -90,7 +92,7 @@ local function sandbox(directory)
 	local rT={[1] = sandboxed, [2] = sandboxed.."rom"}
 
 	local function check(filename)
-		if filename:sub(1,sandboxed:len()+4) == (sandboxed.."rom/" or sandboxed.."rom\\") then return true end
+		if oSub(filename,1,oLen(sandboxed)+4) == (sandboxed.."rom/" or sandboxed.."rom\\") then return true end
 		for k,v in bPair(rT) do
 			if v==filename then return true end
 		end
@@ -107,8 +109,8 @@ local function sandbox(directory)
 
 	local function returnResolved(path)
 		if path==nil then return sandboxed end
-		local nPath=oResolve(path)
-		if (nPath:sub(1,2)==".." and #nPath==2) or (nPath:sub(1,3)=="../") then return nil end
+		local nPath=oCombine("",path)
+		if (oSub(nPath,1,2)==".." and oLen(nPath)==2) or (oSub(nPath,1,3)=="../") then return nil end
 		return sandboxed..path
 	end
 
@@ -152,7 +154,7 @@ local function sandbox(directory)
 		v=returnResolved(v)
 		if f==nil or v==nil then err("Invalid Path",2) end
 		if isAllowed() then return oFs.copy(f,v) end
-		if check(f) then
+		if check(v) then
 			errorout()
 		end
 		return oFs.copy(f,v)
@@ -163,7 +165,7 @@ local function sandbox(directory)
 		v=returnResolved(v)
 		if f==nil or v==nil then err("Invalid Path",2) end
 		if isAllowed() then return oFs.move(f,v) end
-		if check(f) then
+		if check(f) or check(v) then
 			errorout()
 		end
 		return oFs.move(f,v)
@@ -186,7 +188,8 @@ local function sandbox(directory)
 	end
 
 	function fs.getName(file)
-		file=sandboxed..file or sandboxed
+		file=returnResolved(file)
+		if file==nil then err("Invalid Path",2) end
 		if file==sandboxed then return "root" end
 		return oFs.getName(file)
 	end
@@ -206,6 +209,7 @@ local function sandbox(directory)
 	function fs.getDrive(filepath)
 		filepath=returnResolved(filepath)
 		if filepath==nil then err("Invalid Path",2) end
+		if check(filepath) then return "rom" end
 		return oFs.getDrive(filepath)
 	end
 
