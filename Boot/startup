@@ -260,7 +260,7 @@ local function StartLoader()
 										if not fs.exists(".OSRunner/OSList/"..v) then fs.copy(".tempOS/"..v,".OSRunner/OSList/"..v) end
 									end
 									for k,v in pairs(fs.list(".tempKN")) do
-										fs.delete(".OSRunner/Kernels") fs.copy(".tempKN/"..v,".OSRunner/Kernels/"..v)
+										fs.delete(".OSRunner/Kernels/"..v) fs.copy(".tempKN/"..v,".OSRunner/Kernels/"..v) 
 									end
 									fs.delete(".tempOS")
 									fs.delete(".tempKN")
