@@ -251,17 +251,23 @@ local function StartLoader()
 									for k,v in pairs(fs.list(".OSRunner/OSList")) do
 										fs.copy(".OSRunner/OSList/"..v, ".tempOS/"..v)
 									end
+									os.queueEvent("") coroutine.yield()
 									for k,v in pairs(fs.list(".OSRunner/Kernels")) do
 										fs.copy(".OSRunner/Kernels/"..v, ".tempKN/"..v)
 									end
+									os.queueEvent("") coroutine.yield()
 									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
+									os.queueEvent("") coroutine.yield()
 									pcall(setfenv(loadstring(cake),getfenv()))
+									os.queueEvent("") coroutine.yield()
 									for k,v in pairs(fs.list(".tempOS")) do
 										if not fs.exists(".OSRunner/OSList/"..v) then fs.copy(".tempOS/"..v,".OSRunner/OSList/"..v) end
 									end
+									os.queueEvent("") coroutine.yield()
 									for k,v in pairs(fs.list(".tempKN")) do
-										fs.delete(".OSRunner/Kernels/"..v) fs.copy(".tempKN/"..v,".OSRunner/Kernels/"..v) 
+										fs.delete(".OSRunner/Kernels/"..v) fs.copy(".tempKN/"..v,".OSRunner/Kernels/"..v)
 									end
+									os.queueEvent("") coroutine.yield()
 									fs.delete(".tempOS")
 									fs.delete(".tempKN")
 									os.reboot()

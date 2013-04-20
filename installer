@@ -31,6 +31,7 @@ end
 local function Download(Link)
 	if not http then return false end
 	local Res = http.get(Link)
+	os.queueEvent("") coroutine.yield()
 	if not Res then return false end 
 	local ToR = Res.readAll()
 	Res.close()
@@ -52,6 +53,7 @@ for i,v in pairs(Directories) do
 		fs.delete(v)
 	end 
 	fs.makeDir(v)
+	os.queueEvent("") coroutine.yield()
 end 
 
 for i,v in pairs(InstallFiles) do
@@ -66,4 +68,5 @@ for i,v in pairs(InstallFiles) do
 	local Fo = fs.open(v[2], "w")
 	Fo.write(Res)
 	Fo.close()
+	os.queueEvent("") coroutine.yield()
 end 
