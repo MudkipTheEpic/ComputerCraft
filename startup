@@ -6,4 +6,66 @@ if fs.exists(".OSRunner/rebootPath") then
 	shell.run(".OSRunner/APIs/osrunner")
 	sandbox.load(dir,fs.getName(dir))
 end
-shell.run(".OSRunner/Boot/startup")
+
+local function CenterPrint(Text, Line)
+	term.setCursorPos((W-#Text)/2, Line)
+	print(Text)
+end 
+
+
+local ok,err=pcall(setfenv(loadfile(".OSRunner/Boot/startup"),getfenv()))
+if not ok then
+	--Neatly show the error, then ask for reinstall (NDF please do the fancy error showing screen. :P)
+	term.setBackgroundColor(colors.white)
+	term.clear()
+	term.setCursorPos(1,1)
+	local ynM=paintutils.loadImage(".OSRunner/Resources/box")
+	paintutils.drawImage(ynM, 1, 1)
+	term.setBackgroundColor(colors.white)
+	CenterPrint("Would you like to reinstall OSRunner",5)
+	CenterPrint("to attempt to fix this problem?",6)
+	CenterPrint("All OS'es will be kept.",7)
+	term.setBackgroundColor(colors.lime)
+	term.setCursorPos(7,11)
+	write(" Yes ")
+	term.setBackgroundColor(colors.red)
+	term.setCursorPos(40,11)
+	write(" No ")
+	while true do
+		local e,btn,x,y=os.pullEventRaw("mouse_click")
+		if (x>=7 and x<=12 and y==11) then
+			term.setBackgroundColor(colors.white)
+			CenterPrint("Reinstalling...",12)
+			fs.delete(".tempOS")
+			fs.delete(".tempKN")
+			fs.makeDir(".tempOS")
+			fs.makeDir(".tempKN")
+			for k,v in pairs(fs.list(".OSRunner/OSList")) do
+				fs.copy(".OSRunner/OSList/"..v, ".tempOS/"..v)
+			end
+			os.queueEvent("") coroutine.yield()
+			for k,v in pairs(fs.list(".OSRunner/Kernels")) do
+				fs.copy(".OSRunner/Kernels/"..v, ".tempKN/"..v)
+			end
+			os.queueEvent("") coroutine.yield()
+			local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
+			os.queueEvent("") coroutine.yield()
+			pcall(setfenv(loadstring(cake),getfenv()))
+			os.queueEvent("") coroutine.yield()
+			for k,v in pairs(fs.list(".tempOS")) do
+				if not fs.exists(".OSRunner/OSList/"..v) then fs.copy(".tempOS/"..v,".OSRunner/OSList/"..v) end
+			end
+			os.queueEvent("") coroutine.yield()
+			for k,v in pairs(fs.list(".tempKN")) do
+				fs.delete(".OSRunner/Kernels/"..v) fs.copy(".tempKN/"..v,".OSRunner/Kernels/"..v)
+			end
+			os.queueEvent("") coroutine.yield()
+			fs.delete(".tempOS")
+			fs.delete(".tempKN")
+			os.reboot()
+		elseif (x>=40 and x<=44 and y==11) then 
+			os.reboot()
+		end
+	end
+end
+os.reboot()
