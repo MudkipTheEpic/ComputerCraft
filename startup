@@ -23,6 +23,7 @@ if not ok then
 	local ynM=paintutils.loadImage(".OSRunner/Resources/box")
 	paintutils.drawImage(ynM, 1, 1)
 	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.black)
 	CenterPrint("Would you like to reinstall OSRunner",5)
 	CenterPrint("to attempt to fix this problem?",6)
 	CenterPrint("All OS'es will be kept.",7)
