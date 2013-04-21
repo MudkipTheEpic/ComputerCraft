@@ -22,7 +22,7 @@ local Directories = {
 	".OSRunner/OSList";
 }
 
-local Version = "1.3"
+local Version = "1.4"
 
 if not http then
 	print("You must have http enabled to install OSRunner")
