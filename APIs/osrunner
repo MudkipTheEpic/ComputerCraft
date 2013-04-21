@@ -215,8 +215,8 @@ local function sandbox(directory)
 		dir=returnResolved(dir)
 		if dir==nil then err("Invalid Path",2) end
 		getDisks()
-		if fs.combine("", dir) == "" then
-			local res = oFs.list(dir)
+		local res = oFs.list(dir)
+		if oFs.combine("", dir) == "" then
 			for i,v in pairs(Disks) do
 				table.insert(res, v[3])
 			end 
