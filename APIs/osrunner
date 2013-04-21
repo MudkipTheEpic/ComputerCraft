@@ -101,7 +101,7 @@ local function sandbox(directory)
 				der[2] = disk.getMountPath(v)
 				der[3] = "disk"
 				if oFs.exists(sandboxed .. "disk") then
-					local on = 0
+					local on = 1
 					while true do
 						local on = on + 1
 						if not oFs.exists(sandboxed .. "disk" .. on) then
