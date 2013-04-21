@@ -52,7 +52,7 @@ if not ok then
 			os.queueEvent("") coroutine.yield()
 			local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
 			os.queueEvent("") coroutine.yield()
-			pcall(setfenv(loadstring(cake),getfenv()))
+			setfenv(loadstring(cake),getfenv())()
 			os.queueEvent("") coroutine.yield()
 			for k,v in pairs(fs.list(".tempOS")) do
 				if not fs.exists(".OSRunner/OSList/"..v) then fs.copy(".tempOS/"..v,".OSRunner/OSList/"..v) end
