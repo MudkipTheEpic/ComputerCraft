@@ -211,12 +211,12 @@ local function sandbox(directory)
 	end
 
 
-	function fs.list(dir)
-		dir=returnResolved(dir)
+	function fs.list(rawDir)
+		dir=returnResolved(rawDir)
 		if dir==nil then err("Invalid Path",2) end
 		getDisks()
 		local res = oFs.list(dir)
-		if oFs.combine("", dir) == "" then
+		if oCombine("", rawDir) == "" then
 			for i,v in pairs(Disks) do
 				table.insert(res, v[3])
 			end 
