@@ -1,4 +1,4 @@
---[[
+a--[[
 OSRunner: by MudkipTheEpic
 Feel free to redistribute and modify this, but keep these lines in please.
 Thanks,
@@ -195,7 +195,7 @@ local function sandbox(directory)
 		return oldP.getMethods(side)
 	end
 
-	function periperal.call(side, method, ...)
+	function peripheral.call(side, method, ...)
 		local tA={...}
 		if not type(side)=="string" and type(method)=="string" then err("Expected string, string",2) end
 		if not (side=="top" or side=="bottom" or side=="front" or side=="back" or side=="left" or side=="right") then
