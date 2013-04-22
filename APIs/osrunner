@@ -199,7 +199,7 @@ local function sandbox(directory)
 		local tA={...}
 		if not type(side)=="string" and type(method)=="string" then err("Expected string, string",2) end
 		if not (side=="top" or side=="bottom" or side=="front" or side=="back" or side=="left" or side=="right") then
-			err("Invalid side")
+			err("Invalid side",2)
 		end
 		if not (oldP.isPresent(side) and Perms[side]) then err("No peripheral attached",2) end
 		local tMethods=oldP.getMethods(side)
