@@ -112,17 +112,17 @@ local function managePeripherals(OS)
 		local e,b,xPos,yPos=os.pullEventRaw()
 		if e=="mouse_click" then
 			if (yPos==6) then
-				Perms.top = not Perms.top
+				Perms["top"] = not Perms["top"]
 			elseif yPos==8 then
-				Perms.bottom= not Perms.bottom
+				Perms["bottom"]= not Perms["bottom"]
 			elseif yPos==10 then
-				Perms.front= not Perms.front
+				Perms["front"]= not Permsfront
 			elseif yPos==12 then
-				Perms.back= not Perms.back
+				Perms["back"]= not Perms["back"]
 			elseif yPos==14 then
-				Perms.left= not Perms.left
+				Perms["left"]= not Perms["left"]
 			elseif yPos==16 then
-				Perms.right= not Perms.right
+				Perms["right"]= not Perms["right"]
 			elseif (xPos>=5 and xPos<=10 and yPos==18) then
 				local writeConfig=fs.open(OSPD,"w")
 				writeConfig.write(textutils.serialize(Perms))
