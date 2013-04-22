@@ -77,10 +77,10 @@ local function managePeripherals(OS)
 		writeFirst.write(textutils.serialize({top=false,bottom=false,front=false,back=false,left=false,right=false}))
 		writeFirst.close()
 	end
+	local readConfig=fs.open(OSPD,"r")
+	local Perms=textutils.unserialize(readConfig.readAll())
+	readConfig.close()
 	while true do
-		local readConfig=fs.open(OSPD,"r")
-		local Perms=textutils.unserialize(readConfig.readAll())
-		readConfig.close()
 		local drawBox=paintutils.loadImage(".OSRunner/Resources/box")
 		term.setBackgroundColor(colors.white) 
 		term.clear()
@@ -109,14 +109,14 @@ local function managePeripherals(OS)
 		write("Apply")
 		term.setCursorPos(42,18)
 		write("Exit")
-		local e,b,xPos,yPos=os.pullEventRaw("mouse_click")
+		local e,b,xPos,yPos=os.pullEventRaw()
 		if e=="mouse_click" then
 			if (yPos==6) then
 				Perms["top"] = not Perms["top"]
 			elseif yPos==8 then
 				Perms["bottom"]= not Perms["bottom"]
 			elseif yPos==10 then
-				Perms["front"]= not Permsfront
+				Perms["front"]= not Perms["front"]
 			elseif yPos==12 then
 				Perms["back"]= not Perms["back"]
 			elseif yPos==14 then
@@ -127,6 +127,9 @@ local function managePeripherals(OS)
 				local writeConfig=fs.open(OSPD,"w")
 				writeConfig.write(textutils.serialize(Perms))
 				writeConfig.close()
+				local readConfig=fs.open(OSPD,"r")
+				local Perms=textutils.unserialize(readConfig.readAll())
+				readConfig.close()
 			elseif (xPos>=42 and xPos<=46 and yPos==18) then
 				return
 			end
