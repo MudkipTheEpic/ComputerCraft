@@ -1,11 +1,11 @@
-a--[[
+--[[
 OSRunner: by MudkipTheEpic
 Feel free to redistribute and modify this, but keep these lines in please.
 Thanks,
   Mudkip
 ]]--
 
-sandbox={}
+ sandbox={}
 function sandbox.load(...)
 
 	local args={...}
