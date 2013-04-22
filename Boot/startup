@@ -321,14 +321,20 @@ local function StartLoader()
 									CenterPrint("Reinstalling...",12)
 									fs.delete(".tempOS")
 									fs.delete(".tempKN")
+									fs.delete(".tempPM")
 									fs.makeDir(".tempOS")
 									fs.makeDir(".tempKN")
+									fs.makeDir(".tempPM")
 									for k,v in pairs(fs.list(".OSRunner/OSList")) do
 										fs.copy(".OSRunner/OSList/"..v, ".tempOS/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
 									for k,v in pairs(fs.list(".OSRunner/Kernels")) do
 										fs.copy(".OSRunner/Kernels/"..v, ".tempKN/"..v)
+									end
+									os.queueEvent("") coroutine.yield()
+									for k,v in pairs(fs.list(".OSRunner/OSPerms")) do
+										fs.copy(".OSRunner/OSPerms/"..v,".tempPM/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
 									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
@@ -343,8 +349,13 @@ local function StartLoader()
 										fs.delete(".OSRunner/Kernels/"..v) fs.copy(".tempKN/"..v,".OSRunner/Kernels/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
+									for k,v in pairs(fs.list(".tempPM")) do
+										fs.delete(".OSRunner/OSPerms/"..v) fs.copy(".tempPM"..v,".OSRunner/OSPerms/"..v)
+									end
+									os.queueEvent("") coroutine.yield()
 									fs.delete(".tempOS")
 									fs.delete(".tempKN")
+									fs.delete(".tempPM")
 									os.reboot()
 								elseif (x>=40 and x<=44 and y==11) then 
 									return StartLoader()
