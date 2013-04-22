@@ -1,33 +1,51 @@
-sandbox={}
-function sandbox.load(...)
 --[[
-OsRunner: by MudkipTheEpic
+OSRunner: by MudkipTheEpic
 Feel free to redistribute and modify this, but keep these lines in please.
 Thanks,
   Mudkip
 ]]--
 
-local firstTime=false
+sandbox={}
+function sandbox.load(...)
 
-local oCombine=fs.combine
-local oSub=string.sub
-local oLen=string.len
-local function queue(word)
-	for p=1,#word do
-		os.queueEvent("char",word:sub(p,p))
+	local args={...}
+	local dir=args[1].."/"
+	local OS=args[2] or os.version()
+	local filepath=args[3]
+	local urlinstaller=args[4]
+	local Disks
+
+	if not fs.exists(".OSRunner/OSPerms/"..OS) then
+		local writeFirst=fs.open(".OSRunner/OSPerms/"..OS,"w")
+		writeFirst.write(textutils.serialize({top=false,bottom=false,front=false,back=false,left=false,right=false}))
+		writeFirst.close()
 	end
-	os.queueEvent("key",keys.enter)
-end
+	local readPerms=fs.open(".OSRunner/OSPerms/"..OS,"r")
+	local Perms=textutils.unserialize(readPerms.readAll())
+	readPerms.close()
 
-local function activateInstaller(filepath)
-	if filepath then
-		shell.run(filepath)
+
+	local firstTime=false
+
+	local oCombine=fs.combine
+	local oSub=string.sub
+	local oLen=string.len
+	local function queue(word)
+		for p=1,#word do
+			os.queueEvent("char",word:sub(p,p))
+		end
+		os.queueEvent("key",keys.enter)
 	end
-end
+
+	local function activateInstaller(filepath)
+		if filepath then
+			shell.run(filepath)
+		end
+	end
 
 
-sandbox=nil
-printStuff=false --Change to see printed stuff or not.
+	sandbox=nil
+ local printStuff=false --Change to see printed stuff or not.
 
 --Backup FS declaration...
 local oFs={}
@@ -35,13 +53,19 @@ for k, v in pairs(fs) do
 	oFs[k]=v
 end
 
+--Backup peripherals declaration...
+local oldP={}
+for k,v in pairs(peripheral) do
+	oldP[k]=v
+end
 --Backup others declaration...
 local oldDfile=dofile
 local oldLfile=loadfile
 local err = error
 local oldReboot=os.reboot
 local oldShutdown=os.shutdown
-
+local oMountPath=disk.getMountPath
+local oPresent=disk.isPresent
 
 
 local oldsenv=setfenv
@@ -90,15 +114,15 @@ local function sandbox(directory)
 	local sandboxed = directory
 
 	local rT={[1] = sandboxed, [2] = sandboxed.."rom"}
-	local Disks = {}
+	Disks = {}
 
 	local function getDisks()
 		Disks = {}
 		for i,v in pairs(rs.getSides()) do
-			if disk.isPresent(v) then
+			if oPresent(v) and Perms[v] then
 				local der = {}
 				der[1] = v
-				der[2] = disk.getMountPath(v)
+				der[2] = oMountPath(v)
 				der[3] = "disk"
 				if oFs.exists(sandboxed .. "disk") then
 					local on = 1
@@ -143,6 +167,55 @@ local function sandbox(directory)
 		end 
 		return sandboxed..path
 	end
+
+	function peripheral.isPresent(side)
+		if not type(side)=="string" then err("Expected string",2) end
+		if not (side=="top" or side=="bottom" or side=="front" or side=="back" or side=="left" or side=="right") then
+			err("Invalid side.",2)
+		end
+		if not (oldP.isPresent(side) and Perms[side]) then return false end
+		return oldP.isPresent(side)
+	end
+
+	function peripheral.getType(side)
+		if not type(side)=="string" then err("Expected string",2) end
+		if not (side=="top" or side=="bottom" or side=="front" or side=="back" or side=="left" or side=="right") then
+			err("Invalid side.",2)
+		end
+		if not (oldP.isPresent(side) and Perms[side]) then return nil end
+		return oldP.getType(side)
+	end
+
+	function peripheral.getMethods(side)
+		if not type(side)=="string" then err("Expected string",2) end
+		if not (side=="top" or side=="bottom" or side=="front" or side=="back" or side=="left" or side=="right") then
+			err("Invalid side.",2)
+		end
+		if not (oldP.isPresent(side) and Perms[side]) then return nil end
+		return oldP.getMethods(side)
+	end
+
+	function periperal.call(side, method, ...)
+		local tA={...}
+		if not type(side)=="string" and type(method)=="string" then err("Expected string, string",2) end
+		if not (side=="top" or side=="bottom" or side=="front" or side=="back" or side=="left" or side=="right") then
+			err("Invalid side")
+		end
+		if not (oldP.isPresent(side) and Perms[side]) then err("No peripheral attached",2) end
+		local tMethods=oldP.getMethods(side)
+		local check=false
+		for k,v in bPair(tMethods) do
+			if method==v then
+				check=true
+				break
+			end
+		end
+		if not check then err("No such method "..method,2) end
+		check=nil
+		return oldP.call(side,method,unpack(tA))
+	end
+
+
 
 
 	function fs.open(f,v)
@@ -295,13 +368,6 @@ local function restore()
 end
 
 --Main program begins here...
-
-local args={...}
-dir=args[1].."/"
-OS=args[2] or os.version()
-filepath=args[3]
-urlinstaller=args[4]
-
 
 
 if not fs.isDir(dir) then local firstTime=true

@@ -61,10 +61,75 @@ local function makeCustom()
 	makeOS.writeLine(stF)
 	makeOS.writeLine(url)
 	makeOS.close()
+	local makePerms=fs.open(".OSRunner/OSPerms/"..cOSname,"w")
+	makePerms.write(textutils.serialize({top=false,bottom=false,front=false,back=false,left=false,right=false}))
+	makePerms.close() 
 	print("Made OS!")
 	sleep(1)
 	os.pullEvent=oldPull
 	return true
+end
+
+local function managePeripherals(OS)
+	local OSPD=".OSRunner/OSPerms/"..OS
+	if not fs.exists(OSPD) then
+		local writeFirst=fs.open(OSPD,"w")
+		writeFirst.write(textutils.serialize({top=false,bottom=false,front=false,back=false,left=false,right=false}))
+		writeFirst.close()
+	end
+	while true do
+		local readConfig=fs.open(OSPD,"r")
+		local Perms=textutils.unserialize(readConfig.readAll())
+		readConfig.close()
+		local drawBox=paintutils.loadImage(".OSRunner/Resources/box")
+		paintutils.drawImage(drawBox,1,1)
+		term.setTextColor(colors.white)
+		term.setBackgroundColor(colors.red)
+		CenterPrint("Peripheral Management:",1)
+		term.setBackgroundColor(colors.gray)
+		CenterPrint(OS,2)
+		for k,v in pairs(rs.getSides()) do
+			term.setBackgroundColor(colors.white)
+			term.setTextColor(colors.black)
+			term.setCursorPos(14,3+(k*2))
+			write(v..": ")
+			write(tostring(Perms[v]))
+			write(" "..peripheral.getType(v) or "none")
+			if not Perms[v] then 
+				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(k*2))
+			else
+				term.setBackgroundColor(colors.red) term.setTextColor(colors.black) CenterPrint("Deny Access", 4+(k*2))
+			end
+		end
+		term.setCursorPos(5,25)
+		term.setBackgroundColor(colors.lightGray)
+		term.setTextColor(colors.black)
+		write("Apply")
+		term.setCursorPos(42,25)
+		write("Exit")
+		local e,b,xPos,yPos=os.pullEventRaw()
+		if e=="mouse_click" then
+			if (yPos==6) then
+				Perms.top = not Perms.top
+			elseif yPos==8 then
+				Perms.bottom= not Perms.bottom
+			elseif yPos==10 then
+				Perms.front= not Perms.front
+			elseif yPos==12 then
+				Perms.back= not Perms.back
+			elseif yPos==14 then
+				Perms.left= not Perms.left
+			elseif yPos==16 then
+				Perms.right= not Perms.right
+			elseif (xPos>=5 and xPos<=10 and yPos==25) then
+				local writeConfig=fs.open(OSPD,"w")
+				writeConfig.write(textutils.serialize(Perms))
+				writeConfig.close()
+			elseif (xPos>=42 and xPos<=46 and yPos==25) then
+				return
+			end
+		end
+	end
 end
 
 
@@ -177,6 +242,9 @@ local function StartLoader()
 						term.setBackgroundColor(colors.red)
 					end
 					term.write("Default OS")
+					term.setCursorPos(30,5)
+					term.setBackgroundColor(colors.lime)
+					term.write("Manage Peripherals")
 					term.setBackgroundColor(colors.lightGray)
 					term.setTextColor(colors.black)
 					term.setCursorPos(4, 12)
@@ -220,6 +288,8 @@ local function StartLoader()
 							currentOS = (currentOS+1)
 						elseif (xPos >=35 and xPos <=50 and yPos ==15) then
 							return StartLoader()
+						elseif (xPos >= 30 and xPos <= 48 and yPos == 5) then
+							managePeripherals(OSList[currentOS])
 						elseif (xPos >= 5 and xPos <= 13 and yPos == 15) then
 							makeCustom()
 							local OSList=nfs.list(".OSRunner/OSList/")
