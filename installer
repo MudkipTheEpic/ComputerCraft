@@ -72,3 +72,8 @@ for i,v in pairs(InstallFiles) do
 	Fo.close()
 	os.queueEvent("") coroutine.yield()
 end 
+
+local writeVer=fs.open(".OSRunner/OSList/"..os.version(),"w")
+writeVer.writeLine(".OSRunner/Kernels/"..os.version())
+writeVer.write(os.version())
+writeVer.close()
