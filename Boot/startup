@@ -94,9 +94,7 @@ local function managePeripherals(OS)
 			term.setBackgroundColor(colors.white)
 			term.setTextColor(colors.black)
 			term.setCursorPos(14,3+(k*2))
-			write(v..": ")
-			write(tostring(Perms[v]))
-			write(" ("..(peripheral.getType(v) or "none")..")")
+			CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")",3+(k*2))
 			if not Perms[v] then 
 				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(k*2))
 			else
