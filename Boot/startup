@@ -348,7 +348,7 @@ local function StartLoader()
 									end
 									os.queueEvent("") coroutine.yield()
 									for k,v in pairs(fs.list(".tempPM")) do
-										fs.delete(".OSRunner/OSPerms/"..v) fs.copy(".tempPM"..v,".OSRunner/OSPerms/"..v)
+										fs.delete(".OSRunner/OSPerms/"..v) pcall(fs.copy,".tempPM"..v,".OSRunner/OSPerms/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
 									fs.delete(".tempOS")
