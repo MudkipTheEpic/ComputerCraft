@@ -256,8 +256,8 @@ local function managePeripherals(OS)
 		write("Apply")
 		term.setCursorPos(42,18)
 		write("Exit")
-		local e,b,xPos,yPos=os.pullEventRaw()
 		while true do
+			local e,b,xPos,yPos=os.pullEventRaw()
 			if e=="mouse_click" then
 				if (yPos==6) then
 					Perms["top"] = not Perms["top"]
