@@ -243,7 +243,7 @@ local function managePeripherals(OS)
 			term.setBackgroundColor(colors.white)
 			term.setTextColor(colors.black)
 			term.setCursorPos(14,3+(k*2))
-			CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")",3+(k*2))
+			CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")",3+(k*2)..(peripheral.getType(v)=="drive" and (disk.isPresent(v) and "("..disk.getMountPath(v)..")" or "") or peripheral.getType(v)=="disk" and "(empty)"))
 			if not Perms[v] then 
 				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(k*2))
 			else
@@ -288,7 +288,7 @@ local function managePeripherals(OS)
 				elseif (xPos>=42 and xPos<=46 and yPos==18) then
 					return
 				end
-			elseif e=="peripheral" or e=="peripheral_detach" then
+			elseif e=="peripheral" or e=="peripheral_detach" or e=="disk" or e=="disk_eject" then
 				break
 			end
 		end
