@@ -243,7 +243,9 @@ local function managePeripherals(OS)
 			term.setBackgroundColor(colors.white)
 			term.setTextColor(colors.black)
 			term.setCursorPos(14,3+(k*2))
-			CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")"..(peripheral.getType(v)=="drive" and (disk.getMountPath(v) or "(empty)") or ""),3+(k*2))
+			local diskMP=disk.getMountPath(v) or " [empty]"
+			if diskMP~=" [empty]" then diskMP=" ["..diskMP.."]" end
+			CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")"..(peripheral.getType(v)=="drive" and diskMP),3+(k*2))
 			if not Perms[v] then 
 				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(k*2))
 			else
