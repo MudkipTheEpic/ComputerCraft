@@ -287,6 +287,10 @@ local function managePeripherals(OS)
 					local readConfig=fs.open(OSPD,"r")
 					local Perms=textutils.unserialize(readConfig.readAll())
 					readConfig.close()
+					term.setTextColor(colors.black)
+					term.setBackgroundColor(colors.white)
+					CenterPrint("Applied changes.",3)
+					sleep(1)
 					break
 				elseif (xPos>=42 and xPos<=46 and yPos==18) then
 					return
