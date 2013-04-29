@@ -318,7 +318,7 @@ local handle = fs.open("/.OSRunner/osConfig","r")
 defaultOS = handle.readLine()
 handle.close()
 CenterPrint("Running Default OS: "..defaultOS,H-1)
-CenterWrite("Press F5 for OSRunner Menu",H)
+CenterWrite("Press F5 or click for OSRunner Menu",H)
 
 
 
@@ -582,7 +582,7 @@ end
 os.startTimer(3)
 while true do
 	local event, p1, p2 = os.pullEventRaw()
-	if event == "key" and p1 == 63 then
+	if event == "key" and p1 == 63 or event=="mouse_click" then
 		StartLoader()
 		break
 	elseif event == "timer" then
