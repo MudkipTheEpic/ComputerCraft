@@ -183,7 +183,7 @@ local function Setup()
 end 
 
 local function Sand(Dir, OSName, SetupFile, SetupURL)
-	os.run({},".OSRunner/APIs/osrunner")
+	local sandbox=loadfile(".OSRunner/APIs/osrunner")
 	sandbox.load(Dir, OSName, SetupFile, SetupURL)
 end 
 
