@@ -502,7 +502,7 @@ local function StartLoader()
 										fs.copy(".OSRunner/OSPerms/"..v,".tempPM/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
-									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
+									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer").readAll()
 									os.queueEvent("") coroutine.yield()
 									pcall(setfenv(loadstring(cake),getfenv()))
 									os.queueEvent("") coroutine.yield()
