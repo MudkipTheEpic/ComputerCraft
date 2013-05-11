@@ -118,7 +118,7 @@ local function sandbox(directory)
 
 	local function getDisks()
 		Disks = {}
-		for i,v in pairs(rs.getSides()) do
+		for i,v in bPair(rs.getSides()) do
 			if oPresent(v) and Perms[v] then
 				local der = {}
 				der[1] = v
