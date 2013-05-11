@@ -54,7 +54,7 @@ if not ok then
 				fs.copy(".OSRunner/Kernels/"..v, ".tempKN/"..v)
 			end
 			os.queueEvent("") coroutine.yield()
-			local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
+			local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer").readAll()
 			os.queueEvent("") coroutine.yield()
 			setfenv(loadstring(cake),getfenv())()
 			os.queueEvent("") coroutine.yield()
