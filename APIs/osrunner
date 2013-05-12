@@ -6,6 +6,7 @@ Thanks,
 ]]--
 
 return function(...)
+pcall(shell.exit)
 
 	local args={...}
 	local dir=args[1].."/"
@@ -508,7 +509,6 @@ term.setTextColor(colors.white)
 term.clear()
 term.setCursorPos(1,1)
 
-shell.exit()
 
 
 if printStuff then write("Running environment for OS: \""..OS.."\" in 3")
