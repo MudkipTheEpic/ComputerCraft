@@ -69,8 +69,10 @@ if not ok then
 			fs.delete(".tempOS")
 			fs.delete(".tempKN")
 			--os.reboot()
+break
 		elseif (x>=40 and x<=44 and y==11) then 
 			--os.reboot()
+break
 		end
 	end
 end
