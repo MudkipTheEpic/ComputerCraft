@@ -183,6 +183,7 @@ local function Setup()
 end 
 
 local function Sand(Dir, OSName, SetupFile, SetupURL)
+	print(fs.exists(".OSRunner/APIs/osrunner"))
 	local sandbox=getfenv(loadfile(".OSRunner/APIs/osrunner")())
 	sandbox.load(Dir, OSName, SetupFile, SetupURL)
 end 
