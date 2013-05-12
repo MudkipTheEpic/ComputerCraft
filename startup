@@ -68,10 +68,10 @@ if not ok then
 			os.queueEvent("") coroutine.yield()
 			fs.delete(".tempOS")
 			fs.delete(".tempKN")
-			os.reboot()
+			--os.reboot()
 		elseif (x>=40 and x<=44 and y==11) then 
-			os.reboot()
+			--os.reboot()
 		end
 	end
 end
-os.reboot()
+--os.reboot()
