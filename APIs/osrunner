@@ -190,7 +190,7 @@ local function sandbox(directory)
 			elseif method=="getTypeRemote" then
 				if not type(tA[1])=="string" then err("Expected string",2) end
 				return Perms[tA[1]] and oldP.call(side,"getTypeRemote",tA[1])
-			elseif method="getMethodsRemote" then
+			elseif method=="getMethodsRemote" then
 				if not type(tA[1])=="string" then err("Expected string",2) end
 				return Perms[tA[1]] and oldP.call(side,"getMethodsRemote",tA[1])
 			elseif method=="callRemote" then
