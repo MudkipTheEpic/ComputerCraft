@@ -5,7 +5,7 @@ Thanks,
   Mudkip
 ]]--
 
-function load(...)
+return function load(...)
 
 	local args={...}
 	local dir=args[1].."/"
