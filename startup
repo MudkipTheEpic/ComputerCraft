@@ -13,7 +13,7 @@ local function CenterPrint(Text, Line)
 	print(Text)
 end 
 
-
+shell.exit()
 local ok,err=pcall(setfenv(loadfile(".OSRunner/Boot/startup"),getfenv()))
 if not ok then
 	--Neatly show the error, then ask for reinstall (NDF please do the fancy error showing screen. :P)
