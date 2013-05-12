@@ -6,7 +6,7 @@ Thanks,
 ]]--
 
 return function(...)
-pcall(shell.exit)
+if shell then pcall(shell.exit) end
 
 	local args={...}
 	local dir=args[1].."/"
