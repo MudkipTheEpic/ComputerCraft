@@ -185,7 +185,10 @@ end
 local function Sand(Dir, OSName, SetupFile, SetupURL)
 	print(fs.exists(".OSRunner/APIs/osrunner"))
 	sleep(1)
-	local sandbox=loadfile(".OSRunner/APIs/osrunner")()
+	local test=loadfile(".OSRunner/APIs/osrunner")
+print(test)
+local sandbox=test()
+sleep(1)
 	return sandbox(Dir, OSName, SetupFile, SetupURL)
 end 
 
