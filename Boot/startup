@@ -1,3 +1,15 @@
+local debug=true
+local debugPrint
+if debug then
+debugPrint=function(text,time)
+print(text)
+sleep(time)
+end
+else
+debugPrint=function() return false end
+end
+
+debugPrint("Initiating load",2)
 local StartScreen = paintutils.loadImage(".OSRunner/Resources/logo")
 local W, H = term.getSize()
 local nfs = {}
@@ -9,11 +21,14 @@ local ShouldExist = {
 ".OSRunner/Keep";
 ".OSRunner/Kernels";
 }
+local debugPrint
+
 
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
 	term.write(Text.."\n")
 end 
+
 
 local function CenterWrite(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
@@ -221,6 +236,7 @@ local function makeCustom()
 end
 
 local function managePeripherals(OS)
+if debug then print("Starting peripheral management") sleep(1) end
 	local OSPD=".OSRunner/OSPerms/"..OS
 	if not fs.exists(OSPD) then
 		local writeFirst=fs.open(OSPD,"w")
@@ -241,17 +257,17 @@ local function managePeripherals(OS)
 			sideP[v]=peripheral.call(v,"getNamesRemote")
 			for ke,va in pairs(sideP[v]) do
 				writeT[#writeT+1]=va
-				if Perms[va]==nil then Perms[va]==false end
+				if Perms[va]==nil then Perms[va]=false end
 			end
 		end
 	end
 	local function isRemote(name)
-		if not peripheral.isPresent(name) then return false
+		if not peripheral.isPresent(name) then return false end
 		for k,v in pairs(rs.getSides()) do
 			if name==peripheral.getType(v) then return false end
 		end
-		for k,v in pairs(rs.getSides())
-			if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") and peripheral.call(v,"isPresentRemote",name) then return true end
+		for k,v in pairs(rs.getSides()) do
+			if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") and peripheral.call(v,"isPresentRemote",name) then return v end
 		end
 		return nil
 	end
@@ -266,14 +282,12 @@ local function managePeripherals(OS)
 		term.setBackgroundColor(colors.gray)
 		CenterPrint(OS,2)
 		local n=1
-		for i=currentPos,currentPos+6 do
+		for i=currentPos,currentPos+5 do
 			term.setBackgroundColor(colors.white)
 			term.setTextColor(colors.black)
 			term.setCursorPos(14,3+(n*2))
 			local name=writeT[i]
-			print(type(name))
-			print(name)
-			sleep(2)
+			debugPrint(type(name)..":"..(name or ""),2)
 			local allowed=": "..Perms[name] and "allowed( " or "denied( "
 			local type=(peripheral.getType(name) or "none")..")"
 			centerWrite(name..allowed..type,3+(n*2))
@@ -322,7 +336,7 @@ local function managePeripherals(OS)
 				elseif yPos==17 and xPos >= 2 and xPos <= 5 and currentPos>1 then
 					currentPos=currentPos-1
 					break
-				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5=<#writeT then
+				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5<=#writeT then
 					currentPos=currentPos+1
 					break
 				elseif (xPos>=5 and xPos<=10 and yPos==18) then
@@ -351,7 +365,7 @@ local function managePeripherals(OS)
 						sideP[v]=peripheral.call(v,"getNamesRemote")
 						for ke,va in pairs(sideP[v]) do
 							writeT[#writeT+1]=va
-							if Perms[va]==nil then Perms[va]==false end
+							if Perms[va]==nil then Perms[va]=false end
 						end
 					end
 				end
@@ -364,8 +378,6 @@ end
 
 
 if not fs.exists(".OSRunner/osConfig") then local makeConf=fs.open(".OSRunner/osConfig","w") makeConf.writeLine(os.version()) makeConf.close() end
-
-shell.run(".OSRunner/APIs/osrunner")
 
 term.setBackgroundColor(colors.lime)
 term.clear()
@@ -388,6 +400,7 @@ local function CheckFiles()
 end 
 
 local function StartLoader()
+	if debug then print("Starting loader") sleep(1) end
 	local currentOS=1
 	local OSList=nfs.list(".OSRunner/OSList/")
 	table.sort(OSList)
@@ -612,15 +625,6 @@ local function StartLoader()
 end
 
 local function RunDef()
-	local ShouldSet = false
-	for i,v in pairs(ShouldExist) do
-		if not nfs.exists(v) then
-			ShouldSet = true
-		end 
-	end 
-	if ShouldSet == true then
-		Setup()
-	end 
 	term.setBackgroundColor(colors.lime)
 	term.clear()
 	local handle = fs.open("/.OSRunner/osConfig","r")
@@ -640,6 +644,7 @@ local function RunDef()
 end
 
 os.startTimer(3)
+if debug then print("Starting setup") sleep(1) end
 while true do
 	local event, p1, p2 = os.pullEventRaw()
 	if event == "key" and p1 == 63 or event=="mouse_click" then
