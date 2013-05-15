@@ -1,3 +1,5 @@
+local debug=true
+if debug then print("Shell exiting") sleep(2) end
 shell.exit()
 local W, H = term.getSize()
 if fs.exists(".OSRunner/rebootPath") then
@@ -13,6 +15,8 @@ local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
 	print(Text)
 end 
+
+if debug then print("Initiating startup") sleep(2) end
 
 local ok,err=pcall(setfenv(loadfile(".OSRunner/Boot/startup"),getfenv()))
 if not ok then
