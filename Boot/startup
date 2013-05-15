@@ -324,7 +324,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 				elseif yPos==17 and xPos >= 2 and xPos <= 5 and currentPos>1 then
 					currentPos=currentPos-1
 					break
-				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5=<#writeT then
+				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5<=#writeT then
 					currentPos=currentPos+1
 					break
 				elseif (xPos>=5 and xPos<=10 and yPos==18) then
