@@ -10,6 +10,8 @@ local ShouldExist = {
 ".OSRunner/Kernels";
 }
 
+local debug=true
+
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
 	term.write(Text.."\n")
@@ -221,6 +223,7 @@ local function makeCustom()
 end
 
 local function managePeripherals(OS)
+if debug then print("Starting peripheral management") sleep(1) end
 	local OSPD=".OSRunner/OSPerms/"..OS
 	if not fs.exists(OSPD) then
 		local writeFirst=fs.open(OSPD,"w")
@@ -362,8 +365,6 @@ end
 
 if not fs.exists(".OSRunner/osConfig") then local makeConf=fs.open(".OSRunner/osConfig","w") makeConf.writeLine(os.version()) makeConf.close() end
 
-shell.run(".OSRunner/APIs/osrunner")
-
 term.setBackgroundColor(colors.lime)
 term.clear()
 paintutils.drawImage(StartScreen, 8, 4)
@@ -385,6 +386,7 @@ local function CheckFiles()
 end 
 
 local function StartLoader()
+	if debug then print("Starting loader") sleep(1) end
 	local currentOS=1
 	local OSList=nfs.list(".OSRunner/OSList/")
 	table.sort(OSList)
@@ -609,15 +611,6 @@ local function StartLoader()
 end
 
 local function RunDef()
-	local ShouldSet = false
-	for i,v in pairs(ShouldExist) do
-		if not nfs.exists(v) then
-			ShouldSet = true
-		end 
-	end 
-	if ShouldSet == true then
-		Setup()
-	end 
 	term.setBackgroundColor(colors.lime)
 	term.clear()
 	local handle = fs.open("/.OSRunner/osConfig","r")
@@ -637,6 +630,7 @@ local function RunDef()
 end
 
 os.startTimer(3)
+if debug then print("Starting setup") sleep(1) end
 while true do
 	local event, p1, p2 = os.pullEventRaw()
 	if event == "key" and p1 == 63 or event=="mouse_click" then
