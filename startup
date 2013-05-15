@@ -87,6 +87,7 @@ end
 if debug then print("Initiating startup") sleep(2) end
 local ok,err=pcall(setfenv,loadfile(".OSRunner/Boot/startup"),getfenv())
 if not ok then showError(err) end
+if debug then print(type(err)) sleep(2) end
 
 local okz,error=pcall(err)
 if not okz then
