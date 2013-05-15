@@ -1,4 +1,5 @@
 local debug=true
+local ok,err,okz,error
 if debug then print("Shell would be exiting") sleep(2) end
 if not debug then shell.exit() end
 local W, H = term.getSize()
@@ -85,11 +86,11 @@ break
 end
 
 if debug then print("Initiating startup") sleep(2) end
-local ok,err=pcall(setfenv,loadfile(".OSRunner/Boot/startup"),getfenv())
+ok,err=pcall(setfenv,loadfile(".OSRunner/Boot/startup"),getfenv())
 if not ok then showError(err) end
 if debug then print(type(err)) sleep(2) end
 
-local okz,error=pcall(err)
+okz,error=pcall(err)
 if not okz then
 showError(error)
 end
