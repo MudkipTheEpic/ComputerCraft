@@ -246,7 +246,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 			sideP[v]=peripheral.call(v,"getNamesRemote")
 			for ke,va in pairs(sideP[v]) do
 				writeT[#writeT+1]=va
-				if Perms[va]==nil then Perms[va]==false end
+				if Perms[va]==nil then Perms[va]=false end
 			end
 		end
 	end
@@ -353,7 +353,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 						sideP[v]=peripheral.call(v,"getNamesRemote")
 						for ke,va in pairs(sideP[v]) do
 							writeT[#writeT+1]=va
-							if Perms[va]==nil then Perms[va]==false end
+							if Perms[va]==nil then Perms[va]=false end
 						end
 					end
 				end
