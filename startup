@@ -10,21 +10,7 @@ if fs.exists(".OSRunner/rebootPath") then
 	Sand(dir,fs.getName(dir))
 end
 
-local function CenterPrint(Text, Line)
-	term.setCursorPos((W-#Text)/2, Line)
-	print(Text)
-end 
-
-local function Sand(Dir, OSName, SetupFile, SetupURL)
-	local test=loadfile(".OSRunner/APIs/osrunner")
-	local sandbox=test()
-	return sandbox(Dir, OSName, SetupFile, SetupURL)
-end 
-
-if debug then print("Initiating startup") sleep(2) end
-
-local ok,err=pcall(setfenv(loadfile(".OSRunner/Boot/startup"),getfenv()))
-if not ok then
+local function showError(err)
 	--Neatly show the error, then ask for reinstall (NDF please do the fancy error showing screen. :P)
 	term.setBackgroundColor(colors.white)
 	term.clear()
@@ -84,5 +70,26 @@ break
 break
 		end
 	end
+end
+
+
+local function CenterPrint(Text, Line)
+	term.setCursorPos((W-#Text)/2, Line)
+	print(Text)
+end 
+
+local function Sand(Dir, OSName, SetupFile, SetupURL)
+	local test=loadfile(".OSRunner/APIs/osrunner")
+	local sandbox=test()
+	return sandbox(Dir, OSName, SetupFile, SetupURL)
+end 
+
+if debug then print("Initiating startup") sleep(2) end
+local ok,err=pcall(setfenv,loadfile(".OSRunner/Boot/startup"),getfenv())
+if not ok then showError(err) end
+
+local okz,error=pcall(err)
+if not okz then
+showError(error)
 end
 --os.reboot()
