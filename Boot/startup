@@ -1,3 +1,5 @@
+local debug=true
+if debug then print("Initiating load") sleep(2) end
 local StartScreen = paintutils.loadImage(".OSRunner/Resources/logo")
 local W, H = term.getSize()
 local nfs = {}
@@ -10,7 +12,7 @@ local ShouldExist = {
 ".OSRunner/Kernels";
 }
 
-local debug=true
+
 
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
