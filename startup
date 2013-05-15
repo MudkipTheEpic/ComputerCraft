@@ -90,7 +90,7 @@ ok,err=pcall(setfenv,loadfile(".OSRunner/Boot/startup"),getfenv())
 if not ok then showError(err) end
 if debug then print(type(err)) sleep(2) end
 
-okz,error=pcall(err)
+okz,error=pcall(function() return err() end)
 if not okz then
 showError(error)
 end
