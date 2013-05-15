@@ -256,7 +256,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 			if name==peripheral.getType(v) then return false end
 		end
 		for k,v in pairs(rs.getSides()) do
-			if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") and peripheral.call(v,"isPresentRemote",name) then return true end
+			if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") and peripheral.call(v,"isPresentRemote",name) then return v end
 		end
 		return nil
 	end
@@ -271,7 +271,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 		term.setBackgroundColor(colors.gray)
 		CenterPrint(OS,2)
 		local n=1
-		for i=currentPos,currentPos+6 do
+		for i=currentPos,currentPos+5 do
 			term.setBackgroundColor(colors.white)
 			term.setTextColor(colors.black)
 			term.setCursorPos(14,3+(n*2))
