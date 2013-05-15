@@ -253,6 +253,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 	for k,v in pairs(sides) do
 		writeT[#writeT+1]=v
 		if Perms[v]==nil then Perms[v]=false end
+		debugPrint("TEST",1)
 		if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") then
 			sideP[v]=peripheral.call(v,"getNamesRemote")
 			for ke,va in pairs(sideP[v]) do
