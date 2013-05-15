@@ -92,7 +92,7 @@ if not ok then showError(err) end
 if debug then print(type(err)) sleep(2) end
 --Test
 
-isOk,Error=pcall(func)
+isOk,Error=pcall(err)
 if not isOk then
 showError(Error)
 end
