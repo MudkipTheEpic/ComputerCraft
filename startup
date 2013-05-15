@@ -1,5 +1,5 @@
 local debug=true
-local ok,err,okz,error,func
+local ok,err,isOk,Error,func
 if debug then print("Shell would be exiting") sleep(2) end
 if not debug then shell.exit() end
 local W, H = term.getSize()
@@ -92,7 +92,7 @@ if not ok then showError(err) end
 if debug then print(type(err)) sleep(2) end
 --Test
 
-okz,error=pcall(func)
+isOk,Error=pcall(func)
 if not okz then
 showError(error)
 end
