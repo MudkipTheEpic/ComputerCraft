@@ -251,7 +251,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 		end
 	end
 	local function isRemote(name)
-		if not peripheral.isPresent(name) then return false
+		if not peripheral.isPresent(name) then return false end
 		for k,v in pairs(rs.getSides()) do
 			if name==peripheral.getType(v) then return false end
 		end
