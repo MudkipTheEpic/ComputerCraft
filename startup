@@ -93,7 +93,7 @@ if debug then print(type(err)) sleep(2) end
 --Test
 
 isOk,Error=pcall(func)
-if not okz then
-showError(error)
+if not isOk then
+showError(Error)
 end
 --os.reboot()
