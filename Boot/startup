@@ -255,7 +255,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 		for k,v in pairs(rs.getSides()) do
 			if name==peripheral.getType(v) then return false end
 		end
-		for k,v in pairs(rs.getSides())
+		for k,v in pairs(rs.getSides()) do
 			if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") and peripheral.call(v,"isPresentRemote",name) then return true end
 		end
 		return nil
