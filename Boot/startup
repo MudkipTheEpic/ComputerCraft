@@ -1,3 +1,4 @@
+local debug=true
 local debugPrint=function(text,line)
 if debug then
 print(text)
