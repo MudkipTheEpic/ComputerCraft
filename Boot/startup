@@ -250,6 +250,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 	local writeT={}
 	for k,v in pairs(sides) do
 		if debug then print(v) sleep(0.25) end
+		if type(v)==table then for kasd,vasd in pairs(v) do debugPrint(tostring(kasd)..tostring(vasd),1) end end
 		writeT[#writeT+1]=v
 		if Perms[v]==nil then Perms[v]=false end
 		debugPrint("TEST"..type(v),1)
