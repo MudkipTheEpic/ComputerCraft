@@ -1,12 +1,10 @@
-local debug=true
-local debugPrint
+local debugPrint=function(text,line)
 if debug then
-debugPrint=function(text,time)
 print(text)
 sleep(time)
-end
 else
-debugPrint=function() return false end
+return false
+end
 end
 
 debugPrint("Initiating load",2)
