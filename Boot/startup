@@ -251,6 +251,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 	local sideP={}
 	local writeT={}
 	for k,v in pairs(sides) do
+		if debug then print(v) sleep(0.25) end
 		writeT[#writeT+1]=v
 		if Perms[v]==nil then Perms[v]=false end
 		debugPrint("TEST",1)
