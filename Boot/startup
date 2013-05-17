@@ -19,7 +19,6 @@ local ShouldExist = {
 ".OSRunner/Keep";
 ".OSRunner/Kernels";
 }
-local debugPrint
 
 
 local function CenterPrint(Text, Line)
