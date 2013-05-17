@@ -1,5 +1,5 @@
 local debug=true
-local debugPrint=function(text,line)
+local debugPrint=function(text,time)
 if debug then
 print(text)
 sleep(time)
