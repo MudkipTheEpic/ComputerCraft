@@ -290,7 +290,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 			debugPrint(type(name)..":"..(name or ""),2)
 			local allowed=": "..(Perms[name] and "allowed( " or "denied( ")
 			local type=(peripheral.getType(name) or "none")..")"
-			centerWrite(name..allowed..type,3+(n*2))
+			CenterWrite(name..allowed..type,3+(n*2))
 			--CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")"..((peripheral.getType(v)=="drive" and diskMP) or ""),3+(i*2))
 			if not Perms[name] then 
 				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(n*2))
