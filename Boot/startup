@@ -335,7 +335,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 				elseif yPos==17 and xPos >= 2 and xPos <= 5 and currentPos>1 then
 					currentPos=currentPos-1
 					break
-				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5<=#writeT then
+				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5<#writeT then
 					currentPos=currentPos+1
 					break
 				elseif (xPos>=7 and xPos<=12 and yPos==18) then
@@ -360,7 +360,6 @@ if debug then print("Starting peripheral management") sleep(1) end
 				for k,v in pairs(sides) do
 					writeT[#writeT+1]=v
 					if Perms[v]==nil then Perms[v]=false end
-					debugPrint("TEST",0.2)
 					if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") then
 						sideP[v]=peripheral.call(v,"getNamesRemote")
 						for ke,va in pairs(sideP[v]) do
@@ -555,6 +554,7 @@ local function StartLoader()
 							while true do
 								local e,btn,x,y=os.pullEventRaw("mouse_click")
 								if (x>=7 and x<=12 and y==11) then
+								local url=debug and "https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer" or "https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer"
 									term.setBackgroundColor(colors.white)
 									CenterPrint("Reinstalling...",12)
 									fs.delete(".tempOS")
@@ -575,7 +575,7 @@ local function StartLoader()
 										fs.copy(".OSRunner/OSPerms/"..v,".tempPM/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
-									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer").readAll()
+									local cake=http.get(url).readAll()
 									os.queueEvent("") coroutine.yield()
 									pcall(setfenv(loadstring(cake),getfenv()))
 									os.queueEvent("") coroutine.yield()
