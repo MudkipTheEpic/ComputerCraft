@@ -303,7 +303,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 		term.setTextColor(currentPos>1 and colors.black or colors.gray)
 		term.setCursorPos(2,17)
 		write("Back")
-		term.setTextColor(currentPos+6<#writeT and colors.black or colors.gray)
+		term.setTextColor(currentPos+5<#writeT and colors.black or colors.gray)
 		term.setCursorPos(47,17)
 		write("Next")
 		term.setCursorPos(7,18)
