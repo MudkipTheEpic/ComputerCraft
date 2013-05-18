@@ -272,6 +272,11 @@ if debug then print("Starting peripheral management") sleep(1) end
 		return nil
 	end
 	while true do
+		for i=1,#writeT do
+			if Perms[writeT[i]] and isRemote(writeT[i]) and not Perms[isRemote(writeT[i])] then
+				Perms[writeT[i]]=false
+			end
+		end
 		local drawBox=paintutils.loadImage(".OSRunner/Resources/box")
 		term.setBackgroundColor(colors.white) 
 		term.clear()
@@ -287,9 +292,11 @@ if debug then print("Starting peripheral management") sleep(1) end
 			term.setTextColor(colors.black)
 			term.setCursorPos(14,3+(n*2))
 			local name=writeT[i]
+			local where
+			if isRemote(name) then where=" ("..isRemote(name)..")" else where="" end
 			local allowed=": "..(Perms[name] and "allowed (" or "denied (")
 			local type=(peripheral.getType(name) or "none")..")"
-			CenterWrite(name..allowed..type,3+(n*2))
+			CenterWrite(name..where..allowed..type,3+(n*2))
 			--CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")"..((peripheral.getType(v)=="drive" and diskMP) or ""),3+(i*2))
 			if not Perms[name] then 
 				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(n*2))
