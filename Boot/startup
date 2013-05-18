@@ -1,3 +1,14 @@
+local debug=true
+local debugPrint=function(text,time)
+if debug then
+print(text)
+sleep(time)
+else
+return false
+end
+end
+
+debugPrint("Initiating load",2)
 local StartScreen = paintutils.loadImage(".OSRunner/Resources/logo")
 local W, H = term.getSize()
 local nfs = {}
@@ -10,14 +21,17 @@ local ShouldExist = {
 ".OSRunner/Kernels";
 }
 
+
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
-	print(Text)
+	term.write(Text)
+	print("")
 end 
+
 
 local function CenterWrite(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
-	write(Text)
+	term.write(Text)
 end 
 
 local function EraseData()
@@ -183,8 +197,9 @@ local function Setup()
 end 
 
 local function Sand(Dir, OSName, SetupFile, SetupURL)
-	os.run({},".OSRunner/APIs/osrunner")
-	sandbox.load(Dir, OSName, SetupFile, SetupURL)
+	local test=loadfile(".OSRunner/APIs/osrunner")
+	local sandbox=test()
+	return sandbox(Dir, OSName, SetupFile, SetupURL)
 end 
 
 local function makeCustom()
@@ -195,7 +210,7 @@ local function makeCustom()
 	term.clear()
 	term.setCursorPos(1,1)
 	print("What is your OS called?")
-	local cOSname=modRead({refusePrint={"\\","/","."," ",}})
+	local cOSname=modRead({refusePrint={"\\","/","."}})
 	if fs.exists(".OSRunner/OSList/"..cOSname) then printError("OS Name taken! D:") sleep(1) os.pullEvent=oldPull return false end
 	print("What is the pastebin ID for the installer?")
 	local pID=read()
@@ -220,6 +235,7 @@ local function makeCustom()
 end
 
 local function managePeripherals(OS)
+if debug then print("Starting peripheral management") sleep(1) end
 	local OSPD=".OSRunner/OSPerms/"..OS
 	if not fs.exists(OSPD) then
 		local writeFirst=fs.open(OSPD,"w")
@@ -229,7 +245,38 @@ local function managePeripherals(OS)
 	local readConfig=fs.open(OSPD,"r")
 	local Perms=textutils.unserialize(readConfig.readAll())
 	readConfig.close()
+	local currentPos=1
+	local sides=rs.getSides()
+	local sideP={}
+	local writeT={}
+	for k,v in pairs(sides) do
+		if debug then print(v) sleep(0.25) end
+		writeT[#writeT+1]=v
+		if Perms[v]==nil then Perms[v]=false end
+		if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") then
+			sideP[v]=peripheral.call(v,"getNamesRemote")
+			for ke,va in pairs(sideP[v]) do
+				writeT[#writeT+1]=va
+				if Perms[va]==nil then Perms[va]=false end
+			end
+		end
+	end
+	local function isRemote(name)
+		if not peripheral.isPresent(name) then return false end
+		for k,v in pairs(rs.getSides()) do
+			if name==peripheral.getType(v) then return false end
+		end
+		for k,v in pairs(rs.getSides()) do
+			if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") and peripheral.call(v,"isPresentRemote",name) then return v end
+		end
+		return nil
+	end
 	while true do
+		for i=1,#writeT do
+			if Perms[writeT[i]] and isRemote(writeT[i]) and not Perms[isRemote(writeT[i])] then
+				Perms[writeT[i]]=false
+			end
+		end
 		local drawBox=paintutils.loadImage(".OSRunner/Resources/box")
 		term.setBackgroundColor(colors.white) 
 		term.clear()
@@ -239,22 +286,34 @@ local function managePeripherals(OS)
 		CenterPrint("Peripheral Management:",1)
 		term.setBackgroundColor(colors.gray)
 		CenterPrint(OS,2)
-		for k,v in pairs(rs.getSides()) do
+		local n=1
+		for i=currentPos,currentPos+5 do
 			term.setBackgroundColor(colors.white)
 			term.setTextColor(colors.black)
-			term.setCursorPos(14,3+(k*2))
-			local diskMP=disk.getMountPath(v) or " [empty]"
-			if diskMP~=" [empty]" then diskMP=" ["..diskMP.."]" end
-			CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")",3+(k*2))
-			--CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")"..((peripheral.getType(v)=="drive" and diskMP) or ""),3+(k*2))
-			if not Perms[v] then 
-				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(k*2))
+			term.setCursorPos(14,3+(n*2))
+			local name=writeT[i]
+			local where
+			if isRemote(name) then where=" ("..isRemote(name)..")" else where="" end
+			local allowed=": "..(Perms[name] and "allowed (" or "denied (")
+			local type=(peripheral.getType(name) or "none")..")"
+			CenterWrite(name..where..allowed..type,3+(n*2))
+			--CenterWrite(v..": "..((Perms[v] and "allowed") or "denied").." ("..(peripheral.getType(v) or "none")..")"..((peripheral.getType(v)=="drive" and diskMP) or ""),3+(i*2))
+			if not Perms[name] then 
+				term.setBackgroundColor(colors.lime) term.setTextColor(colors.white) CenterPrint("Allow Access",4+(n*2))
 			else
-				term.setBackgroundColor(colors.red) term.setTextColor(colors.black) CenterPrint("Deny Access", 4+(k*2))
+				term.setBackgroundColor(colors.red) term.setTextColor(colors.black) CenterPrint("Deny Access", 4+(n*2))
 			end
+			n=n+1
 		end
-		term.setCursorPos(5,18)
+		n=nil
 		term.setBackgroundColor(colors.lightGray)
+		term.setTextColor(currentPos>1 and colors.black or colors.gray)
+		term.setCursorPos(2,17)
+		write("Back")
+		term.setTextColor(currentPos+5<#writeT and colors.black or colors.gray)
+		term.setCursorPos(47,17)
+		write("Next")
+		term.setCursorPos(7,18)
 		term.setTextColor(colors.black)
 		write("Apply")
 		term.setCursorPos(42,18)
@@ -263,24 +322,30 @@ local function managePeripherals(OS)
 			local e,b,xPos,yPos=os.pullEventRaw()
 			if e=="mouse_click" then
 				if (yPos==6) then
-					Perms["top"] = not Perms["top"]
+					Perms[writeT[currentPos]] = not Perms[writeT[currentPos]]
 					break
 				elseif yPos==8 then
-					Perms["bottom"]= not Perms["bottom"]
+					Perms[writeT[currentPos+1]]= not Perms[writeT[currentPos+1]]
 					break
 				elseif yPos==10 then
-					Perms["front"]= not Perms["front"]
+					Perms[writeT[currentPos+2]]= not Perms[writeT[currentPos+2]]
 					break
 				elseif yPos==12 then
-					Perms["back"]= not Perms["back"]
+					Perms[writeT[currentPos+3]]= not Perms[writeT[currentPos+3]]
 					break
 				elseif yPos==14 then
-					Perms["left"]= not Perms["left"]
+					Perms[writeT[currentPos+4]]= not Perms[writeT[currentPos+4]]
 					break
 				elseif yPos==16 then
-					Perms["right"]= not Perms["right"]
+					Perms[writeT[currentPos+5]]= not Perms[writeT[currentPos+5]]
 					break
-				elseif (xPos>=5 and xPos<=10 and yPos==18) then
+				elseif yPos==17 and xPos >= 2 and xPos <= 5 and currentPos>1 then
+					currentPos=currentPos-1
+					break
+				elseif yPos==17 and xPos >=47 and xPos <=50 and currentPos+5<#writeT then
+					currentPos=currentPos+1
+					break
+				elseif (xPos>=7 and xPos<=12 and yPos==18) then
 					local writeConfig=fs.open(OSPD,"w")
 					writeConfig.write(textutils.serialize(Perms))
 					writeConfig.close()
@@ -296,6 +361,21 @@ local function managePeripherals(OS)
 					return
 				end
 			elseif e=="peripheral" or e=="peripheral_detach" or e=="disk" or e=="disk_eject" then
+				local sides=rs.getSides()
+				local sideP={}
+				local writeT={}
+				for k,v in pairs(sides) do
+					writeT[#writeT+1]=v
+					if Perms[v]==nil then Perms[v]=false end
+					if peripheral.getType(v)=="modem" and not peripheral.call(v,"isWireless") then
+						sideP[v]=peripheral.call(v,"getNamesRemote")
+						for ke,va in pairs(sideP[v]) do
+							writeT[#writeT+1]=va
+							if Perms[va]==nil then Perms[va]=false end
+						end
+					end
+				end
+				if currentPos+5>#writeT then currentPos=#writeT-5 end
 				break
 			end
 		end
@@ -304,8 +384,6 @@ end
 
 
 if not fs.exists(".OSRunner/osConfig") then local makeConf=fs.open(".OSRunner/osConfig","w") makeConf.writeLine(os.version()) makeConf.close() end
-
-shell.run(".OSRunner/APIs/osrunner")
 
 term.setBackgroundColor(colors.lime)
 term.clear()
@@ -328,6 +406,7 @@ local function CheckFiles()
 end 
 
 local function StartLoader()
+	if debug then print("Starting loader") sleep(1) end
 	local currentOS=1
 	local OSList=nfs.list(".OSRunner/OSList/")
 	table.sort(OSList)
@@ -482,6 +561,7 @@ local function StartLoader()
 							while true do
 								local e,btn,x,y=os.pullEventRaw("mouse_click")
 								if (x>=7 and x<=12 and y==11) then
+								local url=debug and "https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer" or "https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer"
 									term.setBackgroundColor(colors.white)
 									CenterPrint("Reinstalling...",12)
 									fs.delete(".tempOS")
@@ -502,7 +582,7 @@ local function StartLoader()
 										fs.copy(".OSRunner/OSPerms/"..v,".tempPM/"..v)
 									end
 									os.queueEvent("") coroutine.yield()
-									local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer").readAll()
+									local cake=http.get(url).readAll()
 									os.queueEvent("") coroutine.yield()
 									pcall(setfenv(loadstring(cake),getfenv()))
 									os.queueEvent("") coroutine.yield()
@@ -552,15 +632,6 @@ local function StartLoader()
 end
 
 local function RunDef()
-	local ShouldSet = false
-	for i,v in pairs(ShouldExist) do
-		if not nfs.exists(v) then
-			ShouldSet = true
-		end 
-	end 
-	if ShouldSet == true then
-		Setup()
-	end 
 	term.setBackgroundColor(colors.lime)
 	term.clear()
 	local handle = fs.open("/.OSRunner/osConfig","r")
@@ -580,6 +651,7 @@ local function RunDef()
 end
 
 os.startTimer(3)
+if debug then print("Starting setup") sleep(1) end
 while true do
 	local event, p1, p2 = os.pullEventRaw()
 	if event == "key" and p1 == 63 or event=="mouse_click" then
