@@ -353,7 +353,7 @@ if debug then print("Starting peripheral management") sleep(1) end
 					return
 				end
 			elseif e=="peripheral" or e=="peripheral_detach" or e=="disk" or e=="disk_eject" then
-				local sides={rs.getSides()}
+				local sides=rs.getSides()
 				local sideP={}
 				local writeT={}
 				for k,v in pairs(sides) do
