@@ -1,4 +1,5 @@
-local git = "https://raw.github.com/MudkipTheEpic/ComputerCraft/beta"
+local debug=false
+local git = debug and "https://raw.github.com/MudkipTheEpic/ComputerCraft/beta" or "https://raw.github.com/MudkipTheEpic/ComputerCraft/master"
 
 local InstallFiles = {
 	{"APIs/osrunner", ".OSRunner/APIs/osrunner"};
