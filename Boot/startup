@@ -24,7 +24,8 @@ local ShouldExist = {
 
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
-	term.write(Text.."\n")
+	term.write(Text)
+	print("")
 end 
 
 
