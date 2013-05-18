@@ -1,7 +1,6 @@
 local debug=true
 local ok,err,isOk,Error,func
-if debug then print("Shell would be exiting") sleep(2) end
-if not debug then shell.exit() end
+if debug then print("Shell would be exiting") sleep(2) else shell.exit() end
 local W, H = term.getSize()
 if fs.exists(".OSRunner/rebootPath") then
 	local readReboot=fs.open(".OSRunner/rebootPath","r")
@@ -10,6 +9,8 @@ if fs.exists(".OSRunner/rebootPath") then
 	fs.delete(".OSRunner/rebootPath")
 	Sand(dir,fs.getName(dir))
 end
+
+local url=debug and "https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer" or "https://raw.github.com/MudkipTheEpic/ComputerCraft/master/installer"
 
 
 local function CenterPrint(Text, Line)
@@ -22,6 +23,11 @@ local function Sand(Dir, OSName, SetupFile, SetupURL)
 	local sandbox=test()
 	return sandbox(Dir, OSName, SetupFile, SetupURL)
 end 
+
+local reboot=function()
+if not debug then return os.reboot() end
+return false
+end
 
 local function showError(err)
 	--Neatly show the error, then ask for reinstall (NDF please do the fancy error showing screen. :P)
@@ -62,7 +68,7 @@ local function showError(err)
 				fs.copy(".OSRunner/Kernels/"..v, ".tempKN/"..v)
 			end
 			os.queueEvent("") coroutine.yield()
-			local cake=http.get("https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/installer").readAll()
+			local cake=http.get(url).readAll()
 			os.queueEvent("") coroutine.yield()
 			setfenv(loadstring(cake),getfenv())()
 			os.queueEvent("") coroutine.yield()
@@ -76,10 +82,10 @@ local function showError(err)
 			os.queueEvent("") coroutine.yield()
 			fs.delete(".tempOS")
 			fs.delete(".tempKN")
-			--os.reboot()
+			reboot()
 break
 		elseif (x>=40 and x<=44 and y==11) then 
-			--os.reboot()
+			reboot()
 break
 		end
 	end
@@ -88,4 +94,4 @@ end
 if debug then print("Initiating startup") sleep(2) end
 ok,err=pcall(setfenv(loadfile(".OSRunner/Boot/startup"),getfenv()))
 if not ok then showError(err) end
---os.reboot()
+reboot()
