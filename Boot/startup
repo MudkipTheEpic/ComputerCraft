@@ -314,22 +314,22 @@ if debug then print("Starting peripheral management") sleep(1) end
 			local e,b,xPos,yPos=os.pullEventRaw()
 			if e=="mouse_click" then
 				if (yPos==6) then
-					Perms[currentPos] = not Perms[currentPos]
+					Perms[writeT[currentPos]] = not Perms[writeT[currentPos]]
 					break
 				elseif yPos==8 then
-					Perms[currentPos+1]= not Perms[currentPos+1]
+					Perms[writeT[currentPos+1]]= not Perms[writeT[currentPos+1]]
 					break
 				elseif yPos==10 then
-					Perms[currentPos+2]= not Perms[currentPos+2]
+					Perms[writeT[currentPos+2]]= not Perms[writeT[currentPos+2]]
 					break
 				elseif yPos==12 then
-					Perms[currentPos+3]= not Perms[currentPos+3]
+					Perms[writeT[currentPos+3]]= not Perms[writeT[currentPos+3]]
 					break
 				elseif yPos==14 then
-					Perms[currentPos+4]= not Perms[currentPos+4]
+					Perms[writeT[currentPos+4]]= not Perms[writeT[currentPos+4]]
 					break
 				elseif yPos==16 then
-					Perms[currentPos+5]= not Perms[currentPos+5]
+					Perms[writeT[currentPos+5]]= not Perms[writeT[currentPos+5]]
 					break
 				elseif yPos==17 and xPos >= 2 and xPos <= 5 and currentPos>1 then
 					currentPos=currentPos-1
