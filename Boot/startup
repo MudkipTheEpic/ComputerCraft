@@ -1,4 +1,4 @@
-local debug=true
+local debug=false
 local debugPrint=function(text,time)
 if debug then
 print(text)
