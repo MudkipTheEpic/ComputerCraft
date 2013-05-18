@@ -1,4 +1,4 @@
-local debug=true
+local debug=false
 local ok,err,isOk,Error,func
 if debug then print("Shell would be exiting") sleep(2) else shell.exit() end
 local W, H = term.getSize()
