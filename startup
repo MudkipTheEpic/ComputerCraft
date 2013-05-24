@@ -1,5 +1,10 @@
 local debug=false
 local ok,err,isOk,Error,func
+local function Sand(Dir, OSName, SetupFile, SetupURL)
+	local test=loadfile(".OSRunner/APIs/osrunner")
+	local sandbox=test()
+	return sandbox(Dir, OSName, SetupFile, SetupURL)
+end 
 if debug then print("Shell would be exiting") sleep(2) else shell.exit() end
 local W, H = term.getSize()
 if fs.exists(".OSRunner/rebootPath") then
@@ -16,12 +21,6 @@ local url=debug and "https://raw.github.com/MudkipTheEpic/ComputerCraft/beta/ins
 local function CenterPrint(Text, Line)
 	term.setCursorPos((W-#Text)/2, Line)
 	print(Text)
-end 
-
-local function Sand(Dir, OSName, SetupFile, SetupURL)
-	local test=loadfile(".OSRunner/APIs/osrunner")
-	local sandbox=test()
-	return sandbox(Dir, OSName, SetupFile, SetupURL)
 end 
 
 local reboot=function()
